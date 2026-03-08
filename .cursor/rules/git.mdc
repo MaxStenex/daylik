@@ -1,0 +1,14 @@
+---
+alwaysApply: true
+---
+
+Commit messages must have a short title under 50 characters, followed by a blank line and a body.
+- Title must start with one of: "feat: ", "fix: ", "refactor: "
+- Write like a real developer — casual, to the point, no corporate tone
+- Body lines are lowercase and flow naturally, not formatted as a structured report
+- No bold headers, no bullet-point categories like **Infra:** or **Config:**
+- No specific file or variable names
+- No phrases like "this commit", "this change", "added support for"
+- Each line of the body is a separate thought, separated by a newline
+- Mention what was done and why it matters, not just what files were touched
+- Do not end the message with ``` or wrap it in a code block

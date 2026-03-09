@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/joho/godotenv"
@@ -10,6 +11,7 @@ import (
 type Config struct {
 	HTTP     HTTPConfig
 	Postgres PostgresConfig
+	JWT      JWTConfig
 }
 
 type HTTPConfig struct {
@@ -24,6 +26,12 @@ type PostgresConfig struct {
 	Port     string `env:"POSTGRES_PORT" env-required:"true"`
 	DB      string `env:"POSTGRES_DB" env-required:"true"`
 	SSLMode string `env:"POSTGRES_SSLMODE" env-required:"true"`
+}
+
+type JWTConfig struct {
+	Secret     string        `env:"JWT_SECRET" env-required:"true"`
+	AccessTTL  time.Duration `env:"JWT_ACCESS_TTL" env-required:"true"`
+	RefreshTTL time.Duration `env:"JWT_REFRESH_TTL" env-required:"true"`
 }
 
 func (c PostgresConfig) DSN() string {

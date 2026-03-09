@@ -5,22 +5,30 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	chimiddleware "github.com/go-chi/chi/v5/middleware"
 
-	userhandler "github.com/maximrozinkevich/daylik/internal/delivery/http/user"
+	"github.com/maximrozinkevich/daylik/internal/delivery/http/middleware"
+	"github.com/maximrozinkevich/daylik/internal/delivery/http/user"
 )
 
-func NewRouter(log *slog.Logger, userHandler *userhandler.Handler) http.Handler {
+func NewRouter(log *slog.Logger, tokens middleware.TokenVerifier, userHandler *user.Handler) http.Handler {
 	r := chi.NewRouter()
 
-	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
-	r.Use(SlogLogger(log))
-	r.Use(middleware.Recoverer)
+	r.Use(chimiddleware.RequestID)
+	r.Use(chimiddleware.RealIP)
+	r.Use(middleware.SlogLogger(log))
+	r.Use(chimiddleware.Recoverer)
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Route("/auth", func(r chi.Router) {
 			r.Post("/register", userHandler.Register)
+			r.Post("/login", userHandler.Login)
+			r.Post("/refresh", userHandler.Refresh)
+		})
+
+		r.Group(func(r chi.Router) {
+			r.Use(middleware.Authenticate(tokens))
+			r.Post("/auth/logout", userHandler.Logout)
 		})
 	})
 

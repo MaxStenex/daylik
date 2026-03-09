@@ -14,9 +14,10 @@ import (
 	"github.com/maximrozinkevich/daylik/pkg/logger"
 	"github.com/maximrozinkevich/daylik/pkg/postgres"
 
+	jwt_adapter "github.com/maximrozinkevich/daylik/internal/adapters/jwt"
 	deliveryhttp "github.com/maximrozinkevich/daylik/internal/delivery/http"
 	userhandler "github.com/maximrozinkevich/daylik/internal/delivery/http/user"
-	userrepo "github.com/maximrozinkevich/daylik/internal/repository/postgres"
+	user_repo "github.com/maximrozinkevich/daylik/internal/repository/postgres"
 	"github.com/maximrozinkevich/daylik/internal/usecase/user"
 )
 
@@ -39,17 +40,21 @@ func main() {
 	}
 	defer pool.Close()
 
+	// Adapters
+	tokens := jwt_adapter.New(cfg.JWT.Secret, cfg.JWT.AccessTTL)
+
 	// Repositories
-	userRepo := userrepo.NewUserRepository(pool)
+	userRepo := user_repo.NewUserRepository(pool)
+	refreshTokenRepo := user_repo.NewRefreshTokenRepository(pool)
 
 	// Services
-	userSrv := user.New(userRepo)
+	userSrv := user.New(userRepo, refreshTokenRepo, tokens, cfg.JWT.RefreshTTL)
 
 	// Handlers
 	userHandler := userhandler.NewHandler(userSrv)
 
 	// Router
-	router := deliveryhttp.NewRouter(log, userHandler)
+	router := deliveryhttp.NewRouter(log, tokens, userHandler)
 
 	addr := fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port)
 	srv := &http.Server{

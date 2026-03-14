@@ -3,24 +3,21 @@ package user
 import (
 	"net/http"
 
+	"github.com/maximrozinkevich/daylik/internal/delivery/http/httputil"
 	"github.com/maximrozinkevich/daylik/internal/delivery/http/middleware"
+	api "github.com/maximrozinkevich/daylik/internal/generated/api"
 	"github.com/maximrozinkevich/daylik/internal/usecase/user"
 )
-
-type logoutRequest struct {
-	RefreshToken string `json:"refresh_token"`
-}
 
 func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 	userID, ok := middleware.UserIDFromContext(r.Context())
 	if !ok {
-		writeJSON(w, http.StatusUnauthorized, errorResponse{Error: "unauthorized"})
+		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("unauthorized"))
 		return
 	}
 
-	var req logoutRequest
-	if err := decodeJSON(r, &req); err != nil {
-		writeJSON(w, http.StatusBadRequest, errorResponse{Error: "invalid request body"})
+	var req api.LogoutRequest
+	if !httputil.BindJSON(w, r, &req) {
 		return
 	}
 
@@ -28,7 +25,7 @@ func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 		UserID:       userID,
 		RefreshToken: req.RefreshToken,
 	}); err != nil {
-		writeJSON(w, http.StatusInternalServerError, errorResponse{Error: "internal server error"})
+		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp(err.Error()))
 		return
 	}
 

@@ -3,23 +3,14 @@ package user
 import (
 	"net/http"
 
+	"github.com/maximrozinkevich/daylik/internal/delivery/http/httputil"
+	api "github.com/maximrozinkevich/daylik/internal/generated/api"
 	"github.com/maximrozinkevich/daylik/internal/usecase/user"
 )
 
-type registerRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-type registerResponse struct {
-	ID    string `json:"id"`
-	Email string `json:"email"`
-}
-
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
-	var req registerRequest
-	if err := decodeJSON(r, &req); err != nil {
-		writeJSON(w, http.StatusBadRequest, errorResponse{Error: "invalid request body"})
+	var req api.RegisterRequest
+	if !httputil.BindJSON(w, r, &req) {
 		return
 	}
 
@@ -28,9 +19,9 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 		Password: req.Password,
 	})
 	if err != nil {
-		writeJSON(w, http.StatusUnauthorized, errorResponse{Error: err.Error()})
+		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp(err.Error()))
 		return
 	}
 
-	writeJSON(w, http.StatusCreated, registerResponse{ID: out.ID, Email: out.Email})
+	httputil.WriteJSON(w, http.StatusCreated, api.RegisterResponse{Id: out.ID, Email: out.Email})
 }

@@ -2,8 +2,6 @@ package user
 
 import (
 	"context"
-	"encoding/json"
-	"net/http"
 
 	"github.com/maximrozinkevich/daylik/internal/usecase/user"
 )
@@ -21,23 +19,4 @@ type Handler struct {
 
 func NewHandler(srv service) *Handler {
 	return &Handler{srv: srv}
-}
-
-type tokenResponse struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-}
-
-type errorResponse struct {
-	Error string `json:"error"`
-}
-
-func writeJSON(w http.ResponseWriter, status int, v any) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	_ = json.NewEncoder(w).Encode(v)
-}
-
-func decodeJSON(r *http.Request, v any) error {
-	return json.NewDecoder(r.Body).Decode(v)
 }

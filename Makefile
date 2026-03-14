@@ -1,4 +1,7 @@
-.PHONY: deps run down migrate lint fmt test
+.PHONY: deps run down migrate lint fmt test gen
+
+gen:
+	go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen -generate types -package api -o internal/generated/api/api.gen.go api/openapi.yaml
 
 deps:
 	docker-compose up -d postgres

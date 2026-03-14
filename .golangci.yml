@@ -11,10 +11,10 @@ linters:
     - bodyclose
     - lll
 
+  settings:
+    lll:
+      line-length: 120
+
 formatters:
   enable:
     - gofmt
-
-linters-settings:
-  lll:
-    line-length: 120

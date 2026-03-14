@@ -24,8 +24,8 @@ type PostgresConfig struct {
 	Password string `env:"POSTGRES_PASSWORD" env-required:"true"`
 	Host     string `env:"POSTGRES_HOST" env-required:"true"`
 	Port     string `env:"POSTGRES_PORT" env-required:"true"`
-	DB      string `env:"POSTGRES_DB" env-required:"true"`
-	SSLMode string `env:"POSTGRES_SSLMODE" env-required:"true"`
+	DB       string `env:"POSTGRES_DB" env-required:"true"`
+	SSLMode  string `env:"POSTGRES_SSLMODE" env-required:"true"`
 }
 
 type JWTConfig struct {

@@ -33,7 +33,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	defer db.Close()
+	defer db.Close() //nolint:errcheck
 
 	ctx := context.Background()
 	if err := db.PingContext(ctx); err != nil {

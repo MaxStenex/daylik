@@ -25,7 +25,12 @@ type service struct {
 	refreshTTL time.Duration
 }
 
-func New(userRepo user.Repository, tokenRepo refresh_token.Repository, tokens TokenManager, refreshTTL time.Duration) *service {
+func New(
+	userRepo user.Repository,
+	tokenRepo refresh_token.Repository,
+	tokens TokenManager,
+	refreshTTL time.Duration,
+) *service {
 	return &service{
 		userRepo:   userRepo,
 		tokenRepo:  tokenRepo,

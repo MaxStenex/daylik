@@ -1,0 +1,20 @@
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - govet
+    - errcheck
+    - staticcheck
+    - unused
+    - misspell
+    - bodyclose
+    - lll
+
+formatters:
+  enable:
+    - gofmt
+
+linters-settings:
+  lll:
+    line-length: 120

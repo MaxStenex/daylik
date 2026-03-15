@@ -16,8 +16,10 @@ import (
 
 	jwt_adapter "github.com/maximrozinkevich/daylik/internal/adapters/jwt"
 	deliveryhttp "github.com/maximrozinkevich/daylik/internal/delivery/http"
+	habithandler "github.com/maximrozinkevich/daylik/internal/delivery/http/habit"
 	userhandler "github.com/maximrozinkevich/daylik/internal/delivery/http/user"
-	user_repo "github.com/maximrozinkevich/daylik/internal/repository/postgres"
+	pg "github.com/maximrozinkevich/daylik/internal/repository/postgres"
+	habitusecase "github.com/maximrozinkevich/daylik/internal/usecase/habit"
 	"github.com/maximrozinkevich/daylik/internal/usecase/user"
 )
 
@@ -44,17 +46,20 @@ func main() {
 	tokens := jwt_adapter.New(cfg.JWT.Secret, cfg.JWT.AccessTTL)
 
 	// Repositories
-	userRepo := user_repo.NewUserRepository(pool)
-	refreshTokenRepo := user_repo.NewRefreshTokenRepository(pool)
+	userRepo := pg.NewUserRepository(pool)
+	refreshTokenRepo := pg.NewRefreshTokenRepository(pool)
+	habitRepo := pg.NewHabitRepository(pool)
 
 	// Services
 	userSrv := user.New(userRepo, refreshTokenRepo, tokens, cfg.JWT.RefreshTTL)
+	habitSrv := habitusecase.New(habitRepo)
 
 	// Handlers
 	userHandler := userhandler.NewHandler(userSrv)
+	habitHandler := habithandler.NewHandler(habitSrv)
 
 	// Router
-	router := deliveryhttp.NewRouter(log, tokens, userHandler)
+	router := deliveryhttp.NewRouter(log, tokens, userHandler, habitHandler)
 
 	addr := fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port)
 	srv := &http.Server{

@@ -7,11 +7,17 @@ import (
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
 
+	"github.com/maximrozinkevich/daylik/internal/delivery/http/habit"
 	"github.com/maximrozinkevich/daylik/internal/delivery/http/middleware"
 	"github.com/maximrozinkevich/daylik/internal/delivery/http/user"
 )
 
-func NewRouter(log *slog.Logger, tokens middleware.TokenVerifier, userHandler *user.Handler) http.Handler {
+func NewRouter(
+	log *slog.Logger,
+	tokens middleware.TokenVerifier,
+	userHandler *user.Handler,
+	habitHandler *habit.Handler,
+) http.Handler {
 	r := chi.NewRouter()
 
 	r.Use(chimiddleware.RequestID)
@@ -28,7 +34,16 @@ func NewRouter(log *slog.Logger, tokens middleware.TokenVerifier, userHandler *u
 
 		r.Group(func(r chi.Router) {
 			r.Use(middleware.Authenticate(tokens))
+
 			r.Post("/auth/logout", userHandler.Logout)
+
+			r.Route("/habits", func(r chi.Router) {
+				r.Post("/", habitHandler.Create)
+				r.Get("/", habitHandler.List)
+				r.Put("/{id}", habitHandler.Update)
+				r.Post("/{id}/archive", habitHandler.Archive)
+				r.Delete("/{id}", habitHandler.Delete)
+			})
 		})
 	})
 

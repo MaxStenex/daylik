@@ -19,6 +19,7 @@ build a habit → log daily progress → earn EXP → level up → unlock achiev
 - Habits can be **archived**, not deleted — history is preserved
 - When creating a habit, the user sets a daily EXP reward. The total EXP cap across all habits is **1000/day**
 (e.g. 3 habits: 300 + 600 + 100 = 1000)
+- Depends on the user level, he could get more EXP per day
 
 ### Daily Progress
 

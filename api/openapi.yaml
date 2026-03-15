@@ -27,12 +27,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-        "409":
-          description: Email already registered
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
 
   /api/v1/auth/login:
     post:
@@ -89,6 +83,179 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "401":
           description: Invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/habits:
+    post:
+      summary: Create a new habit
+      operationId: createHabit
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateHabitRequest"
+      responses:
+        "201":
+          description: Habit created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateHabitResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    get:
+      summary: List all habits for the authenticated user
+      operationId: listHabits
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of habits
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListHabitsResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/habits/{id}:
+    put:
+      summary: Update a habit
+      operationId: updateHabit
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateHabitRequest"
+      responses:
+        "204":
+          description: Habit updated
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Habit not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      summary: Delete a habit
+      operationId: deleteHabit
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Habit deleted
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Habit not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/habits/{id}/archive:
+    post:
+      summary: Archive a habit
+      operationId: archiveHabit
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Habit archived
+        "400":
+          description: Already archived
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Habit not found
           content:
             application/json:
               schema:
@@ -187,3 +354,70 @@ components:
       properties:
         error:
           type: string
+
+    CreateHabitRequest:
+      type: object
+      required: [name, exp_reward, daily_target, unit]
+      properties:
+        name:
+          type: string
+        exp_reward:
+          type: integer
+          format: int64
+        daily_target:
+          type: number
+          format: double
+        unit:
+          type: string
+
+    CreateHabitResponse:
+      $ref: "#/components/schemas/HabitResponse"
+
+    UpdateHabitRequest:
+      type: object
+      required: [name, exp_reward, daily_target, unit]
+      properties:
+        name:
+          type: string
+        exp_reward:
+          type: integer
+          format: int64
+        daily_target:
+          type: number
+          format: double
+        unit:
+          type: string
+
+    HabitResponse:
+      type: object
+      required: [id, name, exp_reward, daily_target, unit, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        exp_reward:
+          type: integer
+          format: int64
+        daily_target:
+          type: number
+          format: double
+        unit:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        archived_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    ListHabitsResponse:
+      type: object
+      required: [habits]
+      properties:
+        habits:
+          type: array
+          items:
+            $ref: "#/components/schemas/HabitResponse"

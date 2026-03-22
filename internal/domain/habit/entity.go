@@ -11,7 +11,7 @@ type Habit struct {
 	UserID      uuid.UUID
 	Name        string
 	ExpReward   int64
-	DailyTarget float64
+	DailyTarget int64
 	Unit        string
 	CreatedAt   time.Time
 	ArchivedAt  *time.Time

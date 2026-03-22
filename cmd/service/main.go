@@ -18,7 +18,9 @@ import (
 	deliveryhttp "github.com/maximrozinkevich/daylik/internal/delivery/http"
 	habithandler "github.com/maximrozinkevich/daylik/internal/delivery/http/habit"
 	userhandler "github.com/maximrozinkevich/daylik/internal/delivery/http/user"
-	pg "github.com/maximrozinkevich/daylik/internal/repository/postgres"
+	habitrepo "github.com/maximrozinkevich/daylik/internal/repository/postgres/habit"
+	refreshtokenrepo "github.com/maximrozinkevich/daylik/internal/repository/postgres/refresh_token"
+	userrepo "github.com/maximrozinkevich/daylik/internal/repository/postgres/user"
 	habitusecase "github.com/maximrozinkevich/daylik/internal/usecase/habit"
 	"github.com/maximrozinkevich/daylik/internal/usecase/user"
 )
@@ -46,9 +48,9 @@ func main() {
 	tokens := jwt_adapter.New(cfg.JWT.Secret, cfg.JWT.AccessTTL)
 
 	// Repositories
-	userRepo := pg.NewUserRepository(pool)
-	refreshTokenRepo := pg.NewRefreshTokenRepository(pool)
-	habitRepo := pg.NewHabitRepository(pool)
+	userRepo := userrepo.New(pool)
+	refreshTokenRepo := refreshtokenrepo.New(pool)
+	habitRepo := habitrepo.New(pool)
 
 	// Services
 	userSrv := user.New(userRepo, refreshTokenRepo, tokens, cfg.JWT.RefreshTTL)

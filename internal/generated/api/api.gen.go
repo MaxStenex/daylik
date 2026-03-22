@@ -15,10 +15,10 @@ const (
 
 // CreateHabitRequest defines model for CreateHabitRequest.
 type CreateHabitRequest struct {
-	DailyTarget float64 `json:"daily_target"`
-	ExpReward   int64   `json:"exp_reward"`
-	Name        string  `json:"name"`
-	Unit        string  `json:"unit"`
+	DailyTarget int64  `json:"daily_target"`
+	ExpReward   int64  `json:"exp_reward"`
+	Name        string `json:"name"`
+	Unit        string `json:"unit"`
 }
 
 // CreateHabitResponse defines model for CreateHabitResponse.
@@ -33,7 +33,7 @@ type ErrorResponse struct {
 type HabitResponse struct {
 	ArchivedAt  *time.Time         `json:"archived_at,omitempty"`
 	CreatedAt   time.Time          `json:"created_at"`
-	DailyTarget float64            `json:"daily_target"`
+	DailyTarget int64              `json:"daily_target"`
 	ExpReward   int64              `json:"exp_reward"`
 	Id          openapi_types.UUID `json:"id"`
 	Name        string             `json:"name"`
@@ -81,10 +81,10 @@ type TokenResponse struct {
 
 // UpdateHabitRequest defines model for UpdateHabitRequest.
 type UpdateHabitRequest struct {
-	DailyTarget float64 `json:"daily_target"`
-	ExpReward   int64   `json:"exp_reward"`
-	Name        string  `json:"name"`
-	Unit        string  `json:"unit"`
+	DailyTarget int64  `json:"daily_target"`
+	ExpReward   int64  `json:"exp_reward"`
+	Name        string `json:"name"`
+	Unit        string `json:"unit"`
 }
 
 // LoginJSONRequestBody defines body for Login for application/json ContentType.

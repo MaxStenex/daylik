@@ -365,8 +365,8 @@ components:
           type: integer
           format: int64
         daily_target:
-          type: number
-          format: double
+          type: integer
+          format: int64
         unit:
           type: string
 
@@ -383,8 +383,8 @@ components:
           type: integer
           format: int64
         daily_target:
-          type: number
-          format: double
+          type: integer
+          format: int64
         unit:
           type: string
 
@@ -401,8 +401,8 @@ components:
           type: integer
           format: int64
         daily_target:
-          type: number
-          format: double
+          type: integer
+          format: int64
         unit:
           type: string
         created_at:

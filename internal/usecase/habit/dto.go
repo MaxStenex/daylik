@@ -35,11 +35,6 @@ type UpdateInput struct {
 	Unit        string
 }
 
-type ArchiveInput struct {
-	HabitID uuid.UUID
-	UserID  uuid.UUID
-}
-
 type DeleteInput struct {
 	HabitID uuid.UUID
 	UserID  uuid.UUID

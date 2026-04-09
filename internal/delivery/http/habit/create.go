@@ -41,6 +41,5 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		DailyTarget: out.Habit.DailyTarget,
 		Unit:        out.Habit.Unit,
 		CreatedAt:   out.Habit.CreatedAt,
-		ArchivedAt:  out.Habit.ArchivedAt,
 	})
 }

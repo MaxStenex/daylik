@@ -26,10 +26,6 @@ func (s *service) Update(ctx context.Context, in UpdateInput) error {
 		return ErrForbidden
 	}
 
-	if h.ArchivedAt != nil {
-		return ErrAlreadyArchived
-	}
-
 	name := strings.TrimSpace(in.Name)
 	if name == "" {
 		return ErrInvalidName

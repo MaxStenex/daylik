@@ -7,7 +7,6 @@ CREATE TABLE IF NOT EXISTS habits (
     daily_target BIGINT      NOT NULL,
     unit         TEXT        NOT NULL,
     created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
-    archived_at  TIMESTAMPTZ,
     deleted_at   TIMESTAMPTZ
 );
 

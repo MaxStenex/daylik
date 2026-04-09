@@ -21,7 +21,6 @@ type habitRow struct {
 	DailyTarget int64      `db:"daily_target"`
 	Unit        string     `db:"unit"`
 	CreatedAt   time.Time  `db:"created_at"`
-	ArchivedAt  *time.Time `db:"archived_at"`
 	DeletedAt   *time.Time `db:"deleted_at"`
 }
 
@@ -34,7 +33,6 @@ func (r habitRow) toDomain() *domain.Habit {
 		DailyTarget: r.DailyTarget,
 		Unit:        r.Unit,
 		CreatedAt:   r.CreatedAt,
-		ArchivedAt:  r.ArchivedAt,
 		DeletedAt:   r.DeletedAt,
 	}
 }
@@ -74,7 +72,7 @@ func (r *Repository) Create(ctx context.Context, h *domain.Habit) error {
 
 func (r *Repository) FindByID(ctx context.Context, id uuid.UUID) (*domain.Habit, error) {
 	rows, err := r.pool.Query(ctx,
-		`SELECT id, user_id, name, exp_reward, daily_target, unit, created_at, archived_at, deleted_at
+		`SELECT id, user_id, name, exp_reward, daily_target, unit, created_at, deleted_at
 		 FROM habits WHERE id = $1`,
 		id,
 	)
@@ -95,7 +93,7 @@ func (r *Repository) FindByID(ctx context.Context, id uuid.UUID) (*domain.Habit,
 
 func (r *Repository) FindAllByUserID(ctx context.Context, userID uuid.UUID) ([]domain.Habit, error) {
 	rows, err := r.pool.Query(ctx,
-		`SELECT id, user_id, name, exp_reward, daily_target, unit, created_at, archived_at, deleted_at
+		`SELECT id, user_id, name, exp_reward, daily_target, unit, created_at, deleted_at
 		 FROM habits WHERE user_id = $1 AND deleted_at IS NULL
 		 ORDER BY created_at DESC`,
 		userID,
@@ -137,18 +135,6 @@ func (r *Repository) DeleteByID(ctx context.Context, id uuid.UUID) error {
 	)
 	if err != nil {
 		return fmt.Errorf("habit repo: delete: %w", err)
-	}
-
-	return nil
-}
-
-func (r *Repository) ArchiveByID(ctx context.Context, id uuid.UUID) error {
-	_, err := r.pool.Exec(ctx,
-		`UPDATE habits SET archived_at = now() WHERE id = $1`,
-		id,
-	)
-	if err != nil {
-		return fmt.Errorf("habit repo: archive: %w", err)
 	}
 
 	return nil

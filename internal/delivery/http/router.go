@@ -41,7 +41,6 @@ func NewRouter(
 				r.Post("/", habitHandler.Create)
 				r.Get("/", habitHandler.List)
 				r.Put("/{id}", habitHandler.Update)
-				r.Post("/{id}/archive", habitHandler.Archive)
 				r.Delete("/{id}", habitHandler.Delete)
 			})
 		})

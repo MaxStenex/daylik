@@ -14,6 +14,5 @@ type Habit struct {
 	DailyTarget int64
 	Unit        string
 	CreatedAt   time.Time
-	ArchivedAt  *time.Time
 	DeletedAt   *time.Time
 }

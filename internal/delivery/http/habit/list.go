@@ -32,7 +32,6 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 			DailyTarget: item.DailyTarget,
 			Unit:        item.Unit,
 			CreatedAt:   item.CreatedAt,
-			ArchivedAt:  item.ArchivedAt,
 		})
 	}
 

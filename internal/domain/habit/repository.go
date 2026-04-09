@@ -12,5 +12,4 @@ type Repository interface {
 	FindAllByUserID(ctx context.Context, userID uuid.UUID) ([]Habit, error)
 	Update(ctx context.Context, habit *Habit) error
 	DeleteByID(ctx context.Context, id uuid.UUID) error
-	ArchiveByID(ctx context.Context, id uuid.UUID) error
 }

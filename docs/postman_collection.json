@@ -302,7 +302,7 @@
               "status": "Created",
               "code": 201,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"name\": \"Morning run\",\n  \"exp_reward\": 10,\n  \"daily_target\": 5,\n  \"unit\": \"km\",\n  \"created_at\": \"2025-03-15T10:00:00Z\",\n  \"archived_at\": null\n}"
+              "body": "{\n  \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"name\": \"Morning run\",\n  \"exp_reward\": 10,\n  \"daily_target\": 5,\n  \"unit\": \"km\",\n  \"created_at\": \"2025-03-15T10:00:00Z\"\n}"
             },
             {
               "name": "400 Bad Request",
@@ -342,7 +342,7 @@
               "status": "OK",
               "code": 200,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"habits\": [\n    {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"name\": \"Morning run\",\n      \"exp_reward\": 10,\n      \"daily_target\": 5,\n      \"unit\": \"km\",\n      \"created_at\": \"2025-03-15T10:00:00Z\",\n      \"archived_at\": null\n    }\n  ]\n}"
+              "body": "{\n  \"habits\": [\n    {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"name\": \"Morning run\",\n      \"exp_reward\": 10,\n      \"daily_target\": 5,\n      \"unit\": \"km\",\n      \"created_at\": \"2025-03-15T10:00:00Z\"\n    }\n  ]\n}"
             },
             {
               "name": "401 Unauthorized",
@@ -391,60 +391,6 @@
               "code": 400,
               "header": [{ "key": "Content-Type", "value": "application/json" }],
               "body": "{\n  \"error\": \"validation error\"\n}"
-            },
-            {
-              "name": "401 Unauthorized",
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"unauthorized\"\n}"
-            },
-            {
-              "name": "403 Forbidden",
-              "status": "Forbidden",
-              "code": 403,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"forbidden\"\n}"
-            },
-            {
-              "name": "404 Not Found",
-              "status": "Not Found",
-              "code": 404,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"habit not found\"\n}"
-            }
-          ]
-        },
-        {
-          "name": "Archive Habit",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{access_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/habits/{{habit_id}}/archive",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "habits", "{{habit_id}}", "archive"]
-            }
-          },
-          "response": [
-            {
-              "name": "204 No Content",
-              "status": "No Content",
-              "code": 204,
-              "header": [],
-              "body": ""
-            },
-            {
-              "name": "400 Bad Request",
-              "status": "Bad Request",
-              "code": 400,
-              "header": [{ "key": "Content-Type", "value": "application/json" }],
-              "body": "{\n  \"error\": \"already archived\"\n}"
             },
             {
               "name": "401 Unauthorized",

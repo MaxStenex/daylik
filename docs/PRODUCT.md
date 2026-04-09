@@ -14,12 +14,11 @@ build a habit → log daily progress → earn EXP → level up → unlock achiev
 - Habits are **quantitative** — the user sets a daily target value and logs a number each day
 (e.g. "Run 5km", log 3.2km today)
 - Habits have a **difficulty tier**: Easy / Medium / Hard
-  - Difficulty maps to a fixed EXP reward per completion
+- Difficulty maps to a fixed EXP reward per completion (easy is 100 - 200, medium is 200-400, hard is 500 and more)
 - Habits belong to a **category** (e.g. Health, Learning, Mindfulness, Productivity)
-- Habits can be **archived**, not deleted — history is preserved
+- Habits can be **deleted** — soft-deleted in the DB, history is preserved
 - When creating a habit, the user sets a daily EXP reward. The total EXP cap across all habits is **1000/day**
 (e.g. 3 habits: 300 + 600 + 100 = 1000)
-- Depends on the user level, he could get more EXP per day
 
 ### Daily Progress
 
@@ -54,7 +53,6 @@ build a habit → log daily progress → earn EXP → level up → unlock achiev
   - "Century" — complete 100 habits total
   - "Full Week" — complete all habits every day for a full week
   - "Health Nut" — complete 10 habits in the Health category
-  - "First Archive" — archive your first habit
 
 ---
 
@@ -85,7 +83,7 @@ build a habit → log daily progress → earn EXP → level up → unlock achiev
 | Entity            | Key fields                                                                           |
 | ----------------- | ------------------------------------------------------------------------------------ |
 | `User`            | id, username, total_exp, level                                                       |
-| `Habit`           | id, user_id, name, category, difficulty, exp_reward, daily_target, unit, archived_at |
+| `Habit`           | id, user_id, name, category, difficulty, exp_reward, daily_target, unit, deleted_at  |
 | `HabitLog`        | id, habit_id, date, logged_value                                                     |
 | `Achievement`     | id, name, description, exp_reward, condition_type, condition_value                   |
 | `UserAchievement` | user_id, achievement_id, earned_at                                                   |

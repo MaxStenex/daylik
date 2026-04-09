@@ -31,7 +31,6 @@ type ErrorResponse struct {
 
 // HabitResponse defines model for HabitResponse.
 type HabitResponse struct {
-	ArchivedAt  *time.Time         `json:"archived_at,omitempty"`
 	CreatedAt   time.Time          `json:"created_at"`
 	DailyTarget int64              `json:"daily_target"`
 	ExpReward   int64              `json:"exp_reward"`

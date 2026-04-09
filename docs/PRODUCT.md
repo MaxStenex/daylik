@@ -23,7 +23,17 @@ build a habit → log daily progress → earn EXP → level up → unlock achiev
 ### Daily Progress
 
 - Each day the user logs their progress value per habit
-- A habit is considered **completed** for the day when logged value >= daily target
+- Progress is tracked server-side as a mutable running value for the current day
+(the client does not hold unsynced state)
+- The client updates progress by sending an **absolute value** (SetProgress), not a delta
+- A habit is considered **completed** for the day when progress >= daily target
+- Current UI treats a habit as binary on the daily screen (0% or 100%), but the underlying
+value is still a number — this keeps the model ready for richer UI later
+- At end of day the user explicitly **finalizes** the day, which freezes a historical
+`HabitLog` row per habit with a snapshot of the habit's current `daily_target`, `unit`,
+and `exp_reward`. Once frozen, a day's log is immutable
+- Historical logs are therefore stable under later habit edits: changing a habit's
+target only affects today (if not yet finalized) and future days, never past logs
 - There is a clear **"day complete"** state when all habits are done — triggers a visual reward or bonus EXP
 - A **weekly summary** shows total completions vs. total possible (e.g. "18/21 habits this week")
 
@@ -84,7 +94,8 @@ build a habit → log daily progress → earn EXP → level up → unlock achiev
 | ----------------- | ------------------------------------------------------------------------------------ |
 | `User`            | id, username, total_exp, level                                                       |
 | `Habit`           | id, user_id, name, category, difficulty, exp_reward, daily_target, unit, deleted_at  |
-| `HabitLog`        | id, habit_id, date, logged_value                                                     |
+| `HabitDailyProgress` | habit_id, user_id, progress, log_date (mutable running state for today)           |
+| `HabitLog`        | id, user_id, habit_id, log_date, progress, daily_target, unit, exp_reward (frozen)   |
 | `Achievement`     | id, name, description, exp_reward, condition_type, condition_value                   |
 | `UserAchievement` | user_id, achievement_id, earned_at                                                   |
 

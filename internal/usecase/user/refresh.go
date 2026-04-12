@@ -23,15 +23,6 @@ func (srv *service) Refresh(ctx context.Context, in RefreshInput) (RefreshOutput
 		return RefreshOutput{}, ErrInvalidRefreshToken
 	}
 
-	if err = srv.tokenRepo.DeleteByHash(ctx, rt.Hash); err != nil {
-		return RefreshOutput{}, fmt.Errorf("refresh: delete old token: %w", err)
-	}
-
-	accessToken, err := srv.tokens.IssueAccess(rt.UserID)
-	if err != nil {
-		return RefreshOutput{}, fmt.Errorf("refresh: issue access token: %w", err)
-	}
-
 	newRaw, err := srv.tokens.GenerateRefresh()
 	if err != nil {
 		return RefreshOutput{}, fmt.Errorf("refresh: generate refresh token: %w", err)
@@ -43,8 +34,21 @@ func (srv *service) Refresh(ctx context.Context, in RefreshInput) (RefreshOutput
 		ExpiresAt: time.Now().Add(srv.refreshTTL),
 	}
 
-	if err = srv.tokenRepo.Create(ctx, newRT); err != nil {
-		return RefreshOutput{}, fmt.Errorf("refresh: store new refresh token: %w", err)
+	if err = srv.txm.RunInTx(ctx, func(ctx context.Context) error {
+		if err := srv.tokenRepo.DeleteByHash(ctx, rt.Hash); err != nil {
+			return fmt.Errorf("delete old token: %w", err)
+		}
+		if err := srv.tokenRepo.Create(ctx, newRT); err != nil {
+			return fmt.Errorf("store new token: %w", err)
+		}
+		return nil
+	}); err != nil {
+		return RefreshOutput{}, fmt.Errorf("refresh: rotate token: %w", err)
+	}
+
+	accessToken, err := srv.tokens.IssueAccess(rt.UserID)
+	if err != nil {
+		return RefreshOutput{}, fmt.Errorf("refresh: issue access token: %w", err)
 	}
 
 	return RefreshOutput{

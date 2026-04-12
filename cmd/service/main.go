@@ -44,6 +44,8 @@ func main() {
 	}
 	defer pool.Close()
 
+	txm := postgres.NewTxManager(pool)
+
 	// Adapters
 	tokens := jwt_adapter.New(cfg.JWT.Secret, cfg.JWT.AccessTTL)
 
@@ -53,7 +55,7 @@ func main() {
 	habitRepo := habitrepo.New(pool)
 
 	// Services
-	userSrv := user.New(userRepo, refreshTokenRepo, tokens, cfg.JWT.RefreshTTL)
+	userSrv := user.New(userRepo, refreshTokenRepo, tokens, txm, cfg.JWT.RefreshTTL)
 	habitSrv := habitusecase.New(habitRepo)
 
 	// Handlers

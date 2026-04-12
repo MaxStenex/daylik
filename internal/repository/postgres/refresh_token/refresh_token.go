@@ -11,6 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	domain "github.com/maximrozinkevich/daylik/internal/domain/refresh_token"
+	"github.com/maximrozinkevich/daylik/pkg/postgres"
 )
 
 type refreshTokenRow struct {
@@ -40,7 +41,7 @@ func New(pool *pgxpool.Pool) *Repository {
 }
 
 func (r *Repository) Create(ctx context.Context, t *domain.RefreshToken) error {
-	_, err := r.pool.Exec(ctx,
+	_, err := postgres.Q(ctx, r.pool).Exec(ctx,
 		`INSERT INTO refresh_tokens (user_id, hash, expires_at)
 		 VALUES ($1, $2, $3)`,
 		t.UserID, t.Hash, t.ExpiresAt,
@@ -73,7 +74,7 @@ func (r *Repository) FindByHash(ctx context.Context, hash string) (*domain.Refre
 }
 
 func (r *Repository) DeleteByHash(ctx context.Context, hash string) error {
-	_, err := r.pool.Exec(ctx,
+	_, err := postgres.Q(ctx, r.pool).Exec(ctx,
 		`DELETE FROM refresh_tokens WHERE hash = $1`,
 		hash,
 	)

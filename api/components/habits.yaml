@@ -1,0 +1,61 @@
+components:
+  schemas:
+    HabitResponse:
+      type: object
+      required: [id, name, exp_reward, daily_target, unit, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        exp_reward:
+          type: integer
+          format: int64
+        daily_target:
+          type: integer
+          format: int64
+        unit:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    CreateHabitRequest:
+      type: object
+      required: [name, exp_reward, daily_target, unit]
+      properties:
+        name:
+          type: string
+        exp_reward:
+          type: integer
+          format: int64
+        daily_target:
+          type: integer
+          format: int64
+        unit:
+          type: string
+
+    UpdateHabitRequest:
+      type: object
+      required: [name, exp_reward, daily_target, unit]
+      properties:
+        name:
+          type: string
+        exp_reward:
+          type: integer
+          format: int64
+        daily_target:
+          type: integer
+          format: int64
+        unit:
+          type: string
+
+    ListHabitsResponse:
+      type: object
+      required: [habits]
+      properties:
+        habits:
+          type: array
+          items:
+            $ref: "#/components/schemas/HabitResponse"

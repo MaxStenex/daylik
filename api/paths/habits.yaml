@@ -1,0 +1,131 @@
+collection:
+  post:
+    summary: Create a new habit
+    operationId: createHabit
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/habits.yaml#/components/schemas/CreateHabitRequest"
+    responses:
+      "201":
+        description: Habit created
+        content:
+          application/json:
+            schema:
+              $ref: "../components/habits.yaml#/components/schemas/HabitResponse"
+      "400":
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "401":
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+
+  get:
+    summary: List all habits for the authenticated user
+    operationId: listHabits
+    security:
+      - bearerAuth: []
+    responses:
+      "200":
+        description: List of habits
+        content:
+          application/json:
+            schema:
+              $ref: "../components/habits.yaml#/components/schemas/ListHabitsResponse"
+      "401":
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+
+item:
+  put:
+    summary: Update a habit
+    operationId: updateHabit
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/habits.yaml#/components/schemas/UpdateHabitRequest"
+    responses:
+      "204":
+        description: Habit updated
+      "400":
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "401":
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "403":
+        description: Forbidden
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "404":
+        description: Habit not found
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+
+  delete:
+    summary: Delete a habit
+    operationId: deleteHabit
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      "204":
+        description: Habit deleted
+      "401":
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "403":
+        description: Forbidden
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "404":
+        description: Habit not found
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"

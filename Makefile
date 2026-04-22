@@ -1,7 +1,10 @@
 .PHONY: deps run down migrate lint fmt test gen
 
+REDOCLY_VERSION := 1.34.5
+
 gen:
-	go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen -generate types -package api -o internal/generated/api/api.gen.go api/openapi.yaml
+	npx --yes @redocly/cli@$(REDOCLY_VERSION) bundle api/openapi.yaml -o .build/openapi.bundled.yaml
+	go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen -generate types -package api -o internal/generated/api/api.gen.go .build/openapi.bundled.yaml
 
 deps:
 	docker-compose up -d postgres

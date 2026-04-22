@@ -34,7 +34,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	httputil.WriteJSON(w, http.StatusCreated, api.CreateHabitResponse{
+	httputil.WriteJSON(w, http.StatusCreated, api.HabitResponse{
 		Id:          out.Habit.ID,
 		Name:        out.Habit.Name,
 		ExpReward:   out.Habit.ExpReward,

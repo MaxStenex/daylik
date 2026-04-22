@@ -21,9 +21,6 @@ type CreateHabitRequest struct {
 	Unit        string `json:"unit"`
 }
 
-// CreateHabitResponse defines model for CreateHabitResponse.
-type CreateHabitResponse = HabitResponse
-
 // ErrorResponse defines model for ErrorResponse.
 type ErrorResponse struct {
 	Error string `json:"error"`

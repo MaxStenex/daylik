@@ -1,0 +1,111 @@
+register:
+  post:
+    summary: Register a new user
+    operationId: register
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/auth.yaml#/components/schemas/RegisterRequest"
+    responses:
+      "201":
+        description: User created
+        content:
+          application/json:
+            schema:
+              $ref: "../components/auth.yaml#/components/schemas/RegisterResponse"
+      "400":
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+
+login:
+  post:
+    summary: Login with email and password
+    operationId: login
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/auth.yaml#/components/schemas/LoginRequest"
+    responses:
+      "200":
+        description: Tokens issued
+        content:
+          application/json:
+            schema:
+              $ref: "../components/auth.yaml#/components/schemas/TokenResponse"
+      "400":
+        description: Invalid request body
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "401":
+        description: Invalid credentials
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+
+refresh:
+  post:
+    summary: Refresh access token
+    operationId: refresh
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/auth.yaml#/components/schemas/RefreshRequest"
+    responses:
+      "200":
+        description: New tokens issued
+        content:
+          application/json:
+            schema:
+              $ref: "../components/auth.yaml#/components/schemas/TokenResponse"
+      "400":
+        description: Invalid request body
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "401":
+        description: Invalid or expired refresh token
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+
+logout:
+  post:
+    summary: Logout and revoke refresh token
+    operationId: logout
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/auth.yaml#/components/schemas/LogoutRequest"
+    responses:
+      "204":
+        description: Logged out
+      "400":
+        description: Invalid request body
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "401":
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"

@@ -9,38 +9,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
-	"github.com/jackc/pgx/v5/pgxpool"
 
 	domain "github.com/maximrozinkevich/daylik/internal/domain/user"
 )
 
-type userRow struct {
-	ID           uuid.UUID `db:"id"`
-	Email        string    `db:"email"`
-	PasswordHash string    `db:"password_hash"`
-	CreatedAt    time.Time `db:"created_at"`
-	UpdatedAt    time.Time `db:"updated_at"`
-}
-
-func (r userRow) toDomain() *domain.User {
-	return &domain.User{
-		ID:           r.ID,
-		Email:        r.Email,
-		PasswordHash: r.PasswordHash,
-		CreatedAt:    r.CreatedAt,
-		UpdatedAt:    r.UpdatedAt,
-	}
-}
-
-type Repository struct {
-	pool *pgxpool.Pool
-}
-
-func New(pool *pgxpool.Pool) *Repository {
-	return &Repository{pool: pool}
-}
-
-func (r *Repository) Create(ctx context.Context, u *domain.User) error {
+func (r *repository) Create(ctx context.Context, u *domain.User) error {
 	type createRow struct {
 		ID        uuid.UUID `db:"id"`
 		CreatedAt time.Time `db:"created_at"`
@@ -72,7 +45,7 @@ func (r *Repository) Create(ctx context.Context, u *domain.User) error {
 	return nil
 }
 
-func (r *Repository) FindByEmail(ctx context.Context, email string) (*domain.User, error) {
+func (r *repository) FindByEmail(ctx context.Context, email string) (*domain.User, error) {
 	rows, err := r.pool.Query(ctx,
 		`SELECT id, email, password_hash, created_at, updated_at
 		 FROM users WHERE email = $1`,

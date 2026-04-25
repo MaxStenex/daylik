@@ -4,43 +4,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
 
 	domain "github.com/maximrozinkevich/daylik/internal/domain/refresh_token"
 	"github.com/maximrozinkevich/daylik/pkg/postgres"
 )
 
-type refreshTokenRow struct {
-	ID        uuid.UUID `db:"id"`
-	UserID    uuid.UUID `db:"user_id"`
-	Hash      string    `db:"hash"`
-	ExpiresAt time.Time `db:"expires_at"`
-	CreatedAt time.Time `db:"created_at"`
-}
-
-func (r refreshTokenRow) toDomain() *domain.RefreshToken {
-	return &domain.RefreshToken{
-		ID:        r.ID,
-		UserID:    r.UserID,
-		Hash:      r.Hash,
-		ExpiresAt: r.ExpiresAt,
-		CreatedAt: r.CreatedAt,
-	}
-}
-
-type Repository struct {
-	pool *pgxpool.Pool
-}
-
-func New(pool *pgxpool.Pool) *Repository {
-	return &Repository{pool: pool}
-}
-
-func (r *Repository) Create(ctx context.Context, t *domain.RefreshToken) error {
+func (r *repository) Create(ctx context.Context, t *domain.RefreshToken) error {
 	_, err := postgres.Q(ctx, r.pool).Exec(ctx,
 		`INSERT INTO refresh_tokens (user_id, hash, expires_at)
 		 VALUES ($1, $2, $3)`,
@@ -52,7 +24,7 @@ func (r *Repository) Create(ctx context.Context, t *domain.RefreshToken) error {
 	return nil
 }
 
-func (r *Repository) FindByHash(ctx context.Context, hash string) (*domain.RefreshToken, error) {
+func (r *repository) FindByHash(ctx context.Context, hash string) (*domain.RefreshToken, error) {
 	rows, err := r.pool.Query(ctx,
 		`SELECT id, user_id, hash, expires_at, created_at
 		 FROM refresh_tokens WHERE hash = $1`,
@@ -73,7 +45,7 @@ func (r *Repository) FindByHash(ctx context.Context, hash string) (*domain.Refre
 	return row.toDomain(), nil
 }
 
-func (r *Repository) DeleteByHash(ctx context.Context, hash string) error {
+func (r *repository) DeleteByHash(ctx context.Context, hash string) error {
 	_, err := postgres.Q(ctx, r.pool).Exec(ctx,
 		`DELETE FROM refresh_tokens WHERE hash = $1`,
 		hash,
@@ -84,7 +56,7 @@ func (r *Repository) DeleteByHash(ctx context.Context, hash string) error {
 	return nil
 }
 
-func (r *Repository) DeleteByHashAndUserID(ctx context.Context, hash string, userID uuid.UUID) error {
+func (r *repository) DeleteByHashAndUserID(ctx context.Context, hash string, userID uuid.UUID) error {
 	tag, err := r.pool.Exec(ctx,
 		`DELETE FROM refresh_tokens WHERE hash = $1 AND user_id = $2`,
 		hash, userID,
@@ -98,7 +70,7 @@ func (r *Repository) DeleteByHashAndUserID(ctx context.Context, hash string, use
 	return nil
 }
 
-func (r *Repository) PruneOldest(ctx context.Context, userID uuid.UUID, maxCount int) error {
+func (r *repository) PruneOldest(ctx context.Context, userID uuid.UUID, maxCount int) error {
 	_, err := r.pool.Exec(ctx,
 		`DELETE FROM refresh_tokens
 		 WHERE user_id = $1
@@ -116,7 +88,7 @@ func (r *Repository) PruneOldest(ctx context.Context, userID uuid.UUID, maxCount
 	return nil
 }
 
-func (r *Repository) DeleteByUserID(ctx context.Context, userID uuid.UUID) error {
+func (r *repository) DeleteByUserID(ctx context.Context, userID uuid.UUID) error {
 	_, err := r.pool.Exec(ctx,
 		`DELETE FROM refresh_tokens WHERE user_id = $1`,
 		userID,

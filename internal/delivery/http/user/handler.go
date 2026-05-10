@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"time"
 
 	"github.com/maximrozinkevich/daylik/internal/usecase/user"
 )
@@ -14,9 +15,11 @@ type service interface {
 }
 
 type Handler struct {
-	srv service
+	srv          service
+	refreshTTL   time.Duration
+	cookieSecure bool
 }
 
-func NewHandler(srv service) *Handler {
-	return &Handler{srv: srv}
+func NewHandler(srv service, refreshTTL time.Duration, cookieSecure bool) *Handler {
+	return &Handler{srv: srv, refreshTTL: refreshTTL, cookieSecure: cookieSecure}
 }

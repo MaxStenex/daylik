@@ -59,7 +59,7 @@ func main() {
 	habitSrv := habitusecase.New(habitRepo)
 
 	// Handlers
-	userHandler := userhandler.NewHandler(userSrv)
+	userHandler := userhandler.NewHandler(userSrv, cfg.JWT.RefreshTTL, cfg.HTTP.CookieSecure)
 	habitHandler := habithandler.NewHandler(habitSrv)
 
 	// Router

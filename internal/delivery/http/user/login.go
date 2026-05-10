@@ -23,6 +23,8 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	h.setRefreshCookie(w, out.RefreshToken)
+
 	httputil.WriteJSON(w, http.StatusOK, api.TokenResponse{
 		AccessToken:  out.AccessToken,
 		RefreshToken: out.RefreshToken,

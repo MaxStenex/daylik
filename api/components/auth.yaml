@@ -30,14 +30,12 @@ components:
 
     RefreshRequest:
       type: object
-      required: [refresh_token]
       properties:
         refresh_token:
           type: string
 
     LogoutRequest:
       type: object
-      required: [refresh_token]
       properties:
         refresh_token:
           type: string

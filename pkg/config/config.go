@@ -15,8 +15,9 @@ type Config struct {
 }
 
 type HTTPConfig struct {
-	Host string `env:"HTTP_HOST" env-required:"true"`
-	Port string `env:"HTTP_PORT" env-required:"true"`
+	Host         string `env:"HTTP_HOST" env-required:"true"`
+	Port         string `env:"HTTP_PORT" env-required:"true"`
+	CookieSecure bool   `env:"COOKIE_SECURE" env-default:"true"`
 }
 
 type PostgresConfig struct {

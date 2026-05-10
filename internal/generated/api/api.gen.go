@@ -49,12 +49,12 @@ type LoginRequest struct {
 
 // LogoutRequest defines model for LogoutRequest.
 type LogoutRequest struct {
-	RefreshToken string `json:"refresh_token"`
+	RefreshToken *string `json:"refresh_token,omitempty"`
 }
 
 // RefreshRequest defines model for RefreshRequest.
 type RefreshRequest struct {
-	RefreshToken string `json:"refresh_token"`
+	RefreshToken *string `json:"refresh_token,omitempty"`
 }
 
 // RegisterRequest defines model for RegisterRequest.

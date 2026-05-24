@@ -1,0 +1,150 @@
+collection:
+  post:
+    summary: Create a new habit log entry
+    operationId: createHabitLogItem
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/habits_log.yaml#/components/schemas/CreateHabitLogRequest"
+    responses:
+      "201":
+        description: Habit log entry created
+        content:
+          application/json:
+            schema:
+              $ref: "../components/habits_log.yaml#/components/schemas/HabitLogResponse"
+      "400":
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "401":
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+
+  get:
+    summary: List log entries for a habit
+    operationId: listHabitLogs
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: habit_id
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      "200":
+        description: List of habit log entries
+        content:
+          application/json:
+            schema:
+              $ref: "../components/habits_log.yaml#/components/schemas/ListHabitLogsResponse"
+      "400":
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "401":
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "404":
+        description: Habit not found
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+
+item:
+  put:
+    summary: Update a habit log entry
+    operationId: updateHabitLogItem
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/habits_log.yaml#/components/schemas/UpdateHabitLogRequest"
+    responses:
+      "204":
+        description: Habit log entry updated
+      "400":
+        description: Validation error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "401":
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "403":
+        description: Forbidden
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "404":
+        description: Habit log entry not found
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+
+  delete:
+    summary: Delete a habit log entry
+    operationId: deleteHabitLogItem
+    security:
+      - bearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    responses:
+      "204":
+        description: Habit log entry deleted
+      "401":
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "403":
+        description: Forbidden
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"
+      "404":
+        description: Habit log entry not found
+        content:
+          application/json:
+            schema:
+              $ref: "../components/common.yaml#/components/schemas/ErrorResponse"

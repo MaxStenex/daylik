@@ -1,16 +1,14 @@
-package habit
+package habits_log
 
 import (
 	"context"
 
-	usecase "github.com/maximrozinkevich/daylik/internal/usecase/habit"
+	usecase "github.com/maximrozinkevich/daylik/internal/usecase/habit_log"
 )
 
 type service interface {
 	Create(ctx context.Context, in usecase.CreateInput) (usecase.CreateOutput, error)
-	List(ctx context.Context, in usecase.ListInput) (usecase.ListOutput, error)
 	Update(ctx context.Context, in usecase.UpdateInput) error
-	Delete(ctx context.Context, in usecase.DeleteInput) error
 }
 
 type Handler struct {

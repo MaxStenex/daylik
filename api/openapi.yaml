@@ -12,10 +12,16 @@ paths:
     $ref: "./paths/auth.yaml#/refresh"
   /api/v1/auth/logout:
     $ref: "./paths/auth.yaml#/logout"
+
   /api/v1/habits:
     $ref: "./paths/habits.yaml#/collection"
   /api/v1/habits/{id}:
     $ref: "./paths/habits.yaml#/item"
+
+  /api/v1/habits-log:
+    $ref: "./paths/habits_log.yaml#/collection"
+  /api/v1/habits-log/{id}:
+    $ref: "./paths/habits_log.yaml#/item"
 
 components:
   securitySchemes:

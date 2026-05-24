@@ -13,6 +13,12 @@ const (
 	BearerAuthScopes = "bearerAuth.Scopes"
 )
 
+// CreateHabitLogRequest defines model for CreateHabitLogRequest.
+type CreateHabitLogRequest struct {
+	CompletedCount int64              `json:"completed_count"`
+	HabitId        openapi_types.UUID `json:"habit_id"`
+}
+
 // CreateHabitRequest defines model for CreateHabitRequest.
 type CreateHabitRequest struct {
 	DailyTarget int64  `json:"daily_target"`
@@ -26,6 +32,14 @@ type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
+// HabitLogResponse defines model for HabitLogResponse.
+type HabitLogResponse struct {
+	CompletedCount int64              `json:"completed_count"`
+	CreatedAt      time.Time          `json:"created_at"`
+	HabitId        openapi_types.UUID `json:"habit_id"`
+	Id             openapi_types.UUID `json:"id"`
+}
+
 // HabitResponse defines model for HabitResponse.
 type HabitResponse struct {
 	CreatedAt   time.Time          `json:"created_at"`
@@ -34,6 +48,11 @@ type HabitResponse struct {
 	Id          openapi_types.UUID `json:"id"`
 	Name        string             `json:"name"`
 	Unit        string             `json:"unit"`
+}
+
+// ListHabitLogsResponse defines model for ListHabitLogsResponse.
+type ListHabitLogsResponse struct {
+	Logs []HabitLogResponse `json:"logs"`
 }
 
 // ListHabitsResponse defines model for ListHabitsResponse.
@@ -75,12 +94,22 @@ type TokenResponse struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
+// UpdateHabitLogRequest defines model for UpdateHabitLogRequest.
+type UpdateHabitLogRequest struct {
+	CompletedCount int64 `json:"completed_count"`
+}
+
 // UpdateHabitRequest defines model for UpdateHabitRequest.
 type UpdateHabitRequest struct {
 	DailyTarget int64  `json:"daily_target"`
 	ExpReward   int64  `json:"exp_reward"`
 	Name        string `json:"name"`
 	Unit        string `json:"unit"`
+}
+
+// ListHabitLogsParams defines parameters for ListHabitLogs.
+type ListHabitLogsParams struct {
+	HabitId openapi_types.UUID `form:"habit_id" json:"habit_id"`
 }
 
 // LoginJSONRequestBody defines body for Login for application/json ContentType.
@@ -97,6 +126,12 @@ type RegisterJSONRequestBody = RegisterRequest
 
 // CreateHabitJSONRequestBody defines body for CreateHabit for application/json ContentType.
 type CreateHabitJSONRequestBody = CreateHabitRequest
+
+// CreateHabitLogItemJSONRequestBody defines body for CreateHabitLogItem for application/json ContentType.
+type CreateHabitLogItemJSONRequestBody = CreateHabitLogRequest
+
+// UpdateHabitLogItemJSONRequestBody defines body for UpdateHabitLogItem for application/json ContentType.
+type UpdateHabitLogItemJSONRequestBody = UpdateHabitLogRequest
 
 // UpdateHabitJSONRequestBody defines body for UpdateHabit for application/json ContentType.
 type UpdateHabitJSONRequestBody = UpdateHabitRequest

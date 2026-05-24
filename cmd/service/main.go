@@ -15,13 +15,16 @@ import (
 	"github.com/maximrozinkevich/daylik/pkg/postgres"
 
 	jwt_adapter "github.com/maximrozinkevich/daylik/internal/adapters/jwt"
-	deliveryhttp "github.com/maximrozinkevich/daylik/internal/delivery/http"
-	habithandler "github.com/maximrozinkevich/daylik/internal/delivery/http/habit"
-	userhandler "github.com/maximrozinkevich/daylik/internal/delivery/http/user"
-	habitrepo "github.com/maximrozinkevich/daylik/internal/repository/postgres/habit"
-	refreshtokenrepo "github.com/maximrozinkevich/daylik/internal/repository/postgres/refresh_token"
-	userrepo "github.com/maximrozinkevich/daylik/internal/repository/postgres/user"
-	habitusecase "github.com/maximrozinkevich/daylik/internal/usecase/habit"
+	delivery_http "github.com/maximrozinkevich/daylik/internal/delivery/http"
+	habit_handler "github.com/maximrozinkevich/daylik/internal/delivery/http/habit"
+	habits_log_handler "github.com/maximrozinkevich/daylik/internal/delivery/http/habit_log"
+	user_handler "github.com/maximrozinkevich/daylik/internal/delivery/http/user"
+	habit_repo "github.com/maximrozinkevich/daylik/internal/repository/postgres/habit"
+	habit_log_repo "github.com/maximrozinkevich/daylik/internal/repository/postgres/habit_log"
+	refresh_token_repo "github.com/maximrozinkevich/daylik/internal/repository/postgres/refresh_token"
+	user_repo "github.com/maximrozinkevich/daylik/internal/repository/postgres/user"
+	habit_usecase "github.com/maximrozinkevich/daylik/internal/usecase/habit"
+	habit_log_usecase "github.com/maximrozinkevich/daylik/internal/usecase/habit_log"
 	"github.com/maximrozinkevich/daylik/internal/usecase/user"
 )
 
@@ -50,20 +53,23 @@ func main() {
 	tokens := jwt_adapter.New(cfg.JWT.Secret, cfg.JWT.AccessTTL)
 
 	// Repositories
-	userRepo := userrepo.New(pool)
-	refreshTokenRepo := refreshtokenrepo.New(pool)
-	habitRepo := habitrepo.New(pool)
+	userRepo := user_repo.New(pool)
+	refreshTokenRepo := refresh_token_repo.New(pool)
+	habitRepo := habit_repo.New(pool)
+	habitLogRepo := habit_log_repo.New(pool)
 
 	// Services
 	userSrv := user.New(userRepo, refreshTokenRepo, tokens, txm, cfg.JWT.RefreshTTL)
-	habitSrv := habitusecase.New(habitRepo)
+	habitSrv := habit_usecase.New(habitRepo)
+	habitLogSrv := habit_log_usecase.New(habitLogRepo, habitRepo)
 
 	// Handlers
-	userHandler := userhandler.NewHandler(userSrv, cfg.JWT.RefreshTTL, cfg.HTTP.CookieSecure)
-	habitHandler := habithandler.NewHandler(habitSrv)
+	userHandler := user_handler.New(userSrv, cfg.JWT.RefreshTTL, cfg.HTTP.CookieSecure)
+	habitHandler := habit_handler.New(habitSrv)
+	habitLogHandler := habits_log_handler.New(habitLogSrv)
 
 	// Router
-	router := deliveryhttp.NewRouter(log, tokens, userHandler, habitHandler)
+	router := delivery_http.NewRouter(log, tokens, userHandler, habitHandler, habitLogHandler)
 
 	addr := fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port)
 	srv := &http.Server{

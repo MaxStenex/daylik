@@ -1,0 +1,46 @@
+components:
+  schemas:
+    HabitLogResponse:
+      type: object
+      required: [id, habit_id, completed_count, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+        habit_id:
+          type: string
+          format: uuid
+        completed_count:
+          type: integer
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+
+    CreateHabitLogRequest:
+      type: object
+      required: [habit_id, completed_count]
+      properties:
+        habit_id:
+          type: string
+          format: uuid
+        completed_count:
+          type: integer
+          format: int64
+
+    UpdateHabitLogRequest:
+      type: object
+      required: [completed_count]
+      properties:
+        completed_count:
+          type: integer
+          format: int64
+
+    ListHabitLogsResponse:
+      type: object
+      required: [logs]
+      properties:
+        logs:
+          type: array
+          items:
+            $ref: "#/components/schemas/HabitLogResponse"

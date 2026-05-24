@@ -20,6 +20,6 @@ type Handler struct {
 	cookieSecure bool
 }
 
-func NewHandler(srv service, refreshTTL time.Duration, cookieSecure bool) *Handler {
+func New(srv service, refreshTTL time.Duration, cookieSecure bool) *Handler {
 	return &Handler{srv: srv, refreshTTL: refreshTTL, cookieSecure: cookieSecure}
 }

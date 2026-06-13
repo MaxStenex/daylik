@@ -53,6 +53,34 @@ func (r *repository) FindByID(ctx context.Context, id uuid.UUID) (*domain.HabitL
 	return row.toDomain(), nil
 }
 
+func (r *repository) FindTodayByHabitIDs(ctx context.Context, userID uuid.UUID, habitIDs []uuid.UUID) (map[uuid.UUID]*domain.HabitLog, error) {
+	logs := make(map[uuid.UUID]*domain.HabitLog, len(habitIDs))
+	if len(habitIDs) == 0 {
+		return logs, nil
+	}
+
+	rows, err := r.pool.Query(ctx,
+		`SELECT DISTINCT ON (habit_id) id, user_id, habit_id, completed_count, created_at
+		 FROM habits_log
+		 WHERE user_id = $1 AND habit_id = ANY($2) AND created_at::date = CURRENT_DATE
+		 ORDER BY habit_id, created_at DESC`,
+		userID, habitIDs,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("habit_log repo: find today by habit ids: %w", err)
+	}
+
+	logRows, err := pgx.CollectRows(rows, pgx.RowToStructByName[habitLogRow])
+	if err != nil {
+		return nil, fmt.Errorf("habit_log repo: find today by habit ids: %w", err)
+	}
+
+	for _, row := range logRows {
+		logs[row.HabitID] = row.toDomain()
+	}
+	return logs, nil
+}
+
 func (r *repository) Update(ctx context.Context, h *domain.HabitLog) error {
 	_, err := r.pool.Exec(ctx,
 		`UPDATE habits_log SET completed_count = $1 WHERE id = $2`,

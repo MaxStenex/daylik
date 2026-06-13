@@ -47,6 +47,7 @@ type HabitResponse struct {
 	ExpReward   int64              `json:"exp_reward"`
 	Id          openapi_types.UUID `json:"id"`
 	Name        string             `json:"name"`
+	TodayLog    *HabitLogResponse  `json:"today_log,omitempty"`
 	Unit        string             `json:"unit"`
 }
 

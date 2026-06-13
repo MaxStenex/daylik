@@ -64,39 +64,7 @@ build a habit → log daily progress → earn EXP → level up → unlock achiev
 - Prominent display of: current streak, longest streak ever, total EXP, current level
 - Per-habit stats available on drill-down
 
-### Leaderboard
-
-- **Monthly** leaderboard — resets each month, fair for users at any stage
-- Ranked by EXP earned within the current month
-- Shows username, level, monthly EXP
-
 ### Weekly Recap
 
 - Delivered as an in-app notification (push notification in the future)
 - Shows: habits completed / total possible, EXP earned this week, streak status, achievements unlocked
-
----
-
-## Domain Entities
-
-
-| Entity            | Key fields                                                                           |
-| ----------------- | ------------------------------------------------------------------------------------ |
-| `User`            | id, username, total_exp, level                                                       |
-| `Habit`           | id, user_id, name, category, difficulty, exp_reward, daily_target, unit, deleted_at  |
-| `HabitLog`        | id, habit_id, date, logged_value                                                     |
-| `Achievement`     | id, name, description, exp_reward, condition_type, condition_value                   |
-| `UserAchievement` | user_id, achievement_id, earned_at                                                   |
-
-
-Streaks are derived from `HabitLog` data (cached for performance where needed).
-
----
-
-## Open Questions / Future
-
-- Push notifications for weekly recap
-- Social features beyond leaderboard (friends, challenges between users)
-- Habit templates / suggested habits shown during onboarding
-- Mobile app
-

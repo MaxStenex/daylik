@@ -60,7 +60,7 @@ func main() {
 
 	// Services
 	userSrv := user.New(userRepo, refreshTokenRepo, tokens, txm, cfg.JWT.RefreshTTL)
-	habitSrv := habit_usecase.New(habitRepo)
+	habitSrv := habit_usecase.New(habitRepo, habitLogRepo)
 	habitLogSrv := habit_log_usecase.New(habitLogRepo, habitRepo)
 
 	// Handlers

@@ -25,6 +25,16 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 
 	habits := make([]api.HabitResponse, 0, len(out.Habits))
 	for _, item := range out.Habits {
+		var todayLog *api.HabitLogResponse
+		if item.TodayLog != nil {
+			todayLog = &api.HabitLogResponse{
+				Id:             item.TodayLog.ID,
+				HabitId:        item.TodayLog.HabitID,
+				CompletedCount: item.TodayLog.CompletedCount,
+				CreatedAt:      item.TodayLog.CreatedAt,
+			}
+		}
+
 		habits = append(habits, api.HabitResponse{
 			Id:          item.ID,
 			Name:        item.Name,
@@ -32,6 +42,7 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 			DailyTarget: item.DailyTarget,
 			Unit:        item.Unit,
 			CreatedAt:   item.CreatedAt,
+			TodayLog:    todayLog,
 		})
 	}
 

@@ -20,6 +20,8 @@ components:
         created_at:
           type: string
           format: date-time
+        today_log:
+          $ref: "./habits_log.yaml#/components/schemas/HabitLogResponse"
 
     CreateHabitRequest:
       type: object

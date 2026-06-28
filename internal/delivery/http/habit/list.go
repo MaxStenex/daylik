@@ -13,13 +13,13 @@ import (
 func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	userID, ok := middleware.UserIDFromContext(r.Context())
 	if !ok {
-		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("unauthorized"))
+		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("Unauthorized"))
 		return
 	}
 
 	out, err := h.srv.List(r.Context(), usecase.ListInput{UserID: userID})
 	if err != nil {
-		httputil.WriteJSON(w, http.StatusInternalServerError, httputil.ErrResp("internal server error"))
+		httputil.WriteJSON(w, http.StatusInternalServerError, httputil.ErrResp("Internal server error"))
 		return
 	}
 

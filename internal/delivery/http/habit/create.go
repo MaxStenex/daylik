@@ -13,7 +13,7 @@ import (
 func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	userID, ok := middleware.UserIDFromContext(r.Context())
 	if !ok {
-		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("unauthorized"))
+		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("Unauthorized"))
 		return
 	}
 

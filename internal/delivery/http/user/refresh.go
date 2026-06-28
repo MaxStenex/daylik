@@ -19,7 +19,7 @@ func (h *Handler) Refresh(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if token == "" {
-		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("missing refresh token"))
+		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("Missing refresh token"))
 		return
 	}
 

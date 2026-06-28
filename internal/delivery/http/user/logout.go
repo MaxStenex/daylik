@@ -12,7 +12,7 @@ import (
 func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 	userID, ok := middleware.UserIDFromContext(r.Context())
 	if !ok {
-		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("unauthorized"))
+		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("Unauthorized"))
 		return
 	}
 
@@ -26,7 +26,7 @@ func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if refreshToken == "" {
-		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("missing refresh token"))
+		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("Missing refresh token"))
 		return
 	}
 

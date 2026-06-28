@@ -17,13 +17,13 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := middleware.UserIDFromContext(ctx)
 	if !ok {
-		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("unauthorized"))
+		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("Unauthorized"))
 		return
 	}
 
 	habitID, err := uuid.Parse(r.URL.Query().Get("habit_id"))
 	if err != nil {
-		httputil.WriteJSON(w, http.StatusBadRequest, httputil.ErrResp("invalid habit id"))
+		httputil.WriteJSON(w, http.StatusBadRequest, httputil.ErrResp("Invalid habit ID"))
 		return
 	}
 
@@ -34,9 +34,9 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		switch {
 		case errors.Is(err, usecase.ErrInvalidHabit), errors.Is(err, usecase.ErrForbidden):
-			httputil.WriteJSON(w, http.StatusNotFound, httputil.ErrResp("habit not found"))
+			httputil.WriteJSON(w, http.StatusNotFound, httputil.ErrResp("Habit not found"))
 		default:
-			httputil.WriteJSON(w, http.StatusInternalServerError, httputil.ErrResp("internal server error"))
+			httputil.WriteJSON(w, http.StatusInternalServerError, httputil.ErrResp("Internal server error"))
 		}
 		return
 	}

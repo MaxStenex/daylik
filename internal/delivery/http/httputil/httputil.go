@@ -12,7 +12,7 @@ const maxBodySize = 1 << 20 // 1 MB
 func WriteJSON(w http.ResponseWriter, status int, v any) {
 	data, err := json.Marshal(v)
 	if err != nil {
-		data = []byte(`{"error":"internal server error"}`)
+		data = []byte(`{"error":"Internal server error"}`)
 		status = http.StatusInternalServerError
 	}
 
@@ -32,7 +32,7 @@ func DecodeJSON(r *http.Request, v any) error {
 
 func BindJSON(w http.ResponseWriter, r *http.Request, v any) bool {
 	if err := DecodeJSON(r, v); err != nil {
-		WriteJSON(w, http.StatusBadRequest, ErrResp("invalid request body"))
+		WriteJSON(w, http.StatusBadRequest, ErrResp("Invalid request body"))
 		return false
 	}
 	return true

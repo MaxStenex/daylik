@@ -3,10 +3,10 @@ package habit_log
 import "errors"
 
 var (
-	ErrInvalidHabit           = errors.New("invalid habit id")
-	ErrInvalidCompletedCount  = errors.New("completed count must be greater than 0")
-	ErrCompletedCountTooLarge = errors.New("completed count cannot be greater than daily target")
-	ErrNotFound               = errors.New("habit log not found")
-	ErrForbidden              = errors.New("access denied")
-	ErrUpdateOutdated         = errors.New("cannot update logs from previous days")
+	ErrInvalidHabit           = errors.New("Please select a valid habit")
+	ErrInvalidCompletedCount  = errors.New("Completed count must be greater than 0")
+	ErrCompletedCountTooLarge = errors.New("Completed count cannot exceed the daily target")
+	ErrNotFound               = errors.New("Habit log not found")
+	ErrForbidden              = errors.New("Access denied")
+	ErrUpdateOutdated         = errors.New("You can only update today's log")
 )

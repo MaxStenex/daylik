@@ -15,13 +15,13 @@ import (
 func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	userID, ok := middleware.UserIDFromContext(r.Context())
 	if !ok {
-		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("unauthorized"))
+		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("Unauthorized"))
 		return
 	}
 
 	habitID, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
-		httputil.WriteJSON(w, http.StatusBadRequest, httputil.ErrResp("invalid habit id"))
+		httputil.WriteJSON(w, http.StatusBadRequest, httputil.ErrResp("Invalid habit ID"))
 		return
 	}
 

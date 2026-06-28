@@ -14,7 +14,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 
 	userID, ok := middleware.UserIDFromContext(ctx)
 	if !ok {
-		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("unauthorized"))
+		httputil.WriteJSON(w, http.StatusUnauthorized, httputil.ErrResp("Unauthorized"))
 		return
 	}
 

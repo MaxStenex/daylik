@@ -13,10 +13,10 @@ import (
 
 func (r *repository) Create(ctx context.Context, h *domain.HabitLog) (*domain.HabitLog, error) {
 	rows, err := r.pool.Query(ctx,
-		`INSERT INTO habits_log (user_id, habit_id, completed_count)
-		 VALUES ($1, $2, $3)
+		`INSERT INTO habits_log (user_id, habit_id, completed_count, daily_target, unit)
+		 VALUES ($1, $2, $3, $4, $5)
 		 RETURNING id, created_at`,
-		h.UserID, h.HabitID, h.CompletedCount,
+		h.UserID, h.HabitID, h.CompletedCount, h.DailyTarget, h.Unit,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("habit_log repo: create: %w", err)
@@ -53,14 +53,44 @@ func (r *repository) FindByID(ctx context.Context, id uuid.UUID) (*domain.HabitL
 	return row.toDomain(), nil
 }
 
-func (r *repository) FindTodayByHabitIDs(ctx context.Context, userID uuid.UUID, habitIDs []uuid.UUID) (map[uuid.UUID]*domain.HabitLog, error) {
+func (r *repository) FindAllByHabitID(
+	ctx context.Context,
+	habitID uuid.UUID,
+) ([]domain.HabitLog, error) {
+	rows, err := r.pool.Query(ctx,
+		`SELECT id, user_id, habit_id, completed_count, unit, daily_target, created_at
+		 FROM habits_log WHERE habit_id = $1
+		 ORDER BY created_at DESC`,
+		habitID,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("habit_log repo: find all by habit id: %w", err)
+	}
+
+	logRows, err := pgx.CollectRows(rows, pgx.RowToStructByName[habitLogRow])
+	if err != nil {
+		return nil, fmt.Errorf("habit_log repo: find all by habit id: %w", err)
+	}
+
+	logs := make([]domain.HabitLog, len(logRows))
+	for i, row := range logRows {
+		logs[i] = *row.toDomain()
+	}
+	return logs, nil
+}
+
+func (r *repository) FindTodayByHabitIDs(
+	ctx context.Context,
+	userID uuid.UUID,
+	habitIDs []uuid.UUID,
+) (map[uuid.UUID]*domain.HabitLog, error) {
 	logs := make(map[uuid.UUID]*domain.HabitLog, len(habitIDs))
 	if len(habitIDs) == 0 {
 		return logs, nil
 	}
 
 	rows, err := r.pool.Query(ctx,
-		`SELECT DISTINCT ON (habit_id) id, user_id, habit_id, completed_count, created_at
+		`SELECT DISTINCT ON (habit_id) id, user_id, habit_id, completed_count, unit, daily_target, created_at
 		 FROM habits_log
 		 WHERE user_id = $1 AND habit_id = ANY($2) AND created_at::date = CURRENT_DATE
 		 ORDER BY habit_id, created_at DESC`,
@@ -83,8 +113,12 @@ func (r *repository) FindTodayByHabitIDs(ctx context.Context, userID uuid.UUID, 
 
 func (r *repository) Update(ctx context.Context, h *domain.HabitLog) error {
 	_, err := r.pool.Exec(ctx,
-		`UPDATE habits_log SET completed_count = $1 WHERE id = $2`,
-		h.CompletedCount, h.ID,
+		`UPDATE habits_log 
+		SET completed_count = $1,
+			  daily_target = $2,
+				unit = $3
+		WHERE id = $4`,
+		h.CompletedCount, h.DailyTarget, h.Unit, h.ID,
 	)
 	if err != nil {
 		return fmt.Errorf("habit_log repo: update: %w", err)

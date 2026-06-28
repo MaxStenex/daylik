@@ -33,6 +33,8 @@ func (s *service) Create(ctx context.Context, in CreateInput) (CreateOutput, err
 		UserID:         in.UserID,
 		HabitID:        in.HabitID,
 		CompletedCount: in.CompletedCount,
+		DailyTarget:    habit.DailyTarget,
+		Unit:           habit.Unit,
 	}
 
 	created, err := s.habitLogRepo.Create(ctx, h)

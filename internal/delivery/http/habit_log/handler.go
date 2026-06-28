@@ -8,6 +8,7 @@ import (
 
 type service interface {
 	Create(ctx context.Context, in usecase.CreateInput) (usecase.CreateOutput, error)
+	List(ctx context.Context, in usecase.ListInput) (usecase.ListOutput, error)
 	Update(ctx context.Context, in usecase.UpdateInput) error
 }
 

@@ -34,7 +34,12 @@ func (s *service) Update(ctx context.Context, in UpdateInput) error {
 		return ErrCompletedCountTooLarge
 	}
 
+	log.Unit = habit.Unit
+	log.DailyTarget = habit.DailyTarget
 	log.CompletedCount = in.CompletedCount
+	if log.CompletedCount > log.DailyTarget {
+		log.CompletedCount = log.DailyTarget
+	}
 
 	if err := s.habitLogRepo.Update(ctx, log); err != nil {
 		return fmt.Errorf("habit_log: update: %w", err)

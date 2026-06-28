@@ -20,3 +20,12 @@ type UpdateInput struct {
 	UserID         uuid.UUID
 	CompletedCount int64
 }
+
+type ListInput struct {
+	UserID  uuid.UUID
+	HabitID uuid.UUID
+}
+
+type ListOutput struct {
+	HabitLogs []domain.HabitLog
+}

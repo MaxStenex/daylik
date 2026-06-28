@@ -1,7 +1,7 @@
 # Daylik — Product Overview
 
 Daylik is a gamified habits tracker. Users build daily habits, track quantitative progress,
-earn EXP and achievements, and compete on leaderboards. The core loop is:
+earn EXP and achievements. The core loop is:
 build a habit → log daily progress → earn EXP → level up → unlock achievements.
 
 ---

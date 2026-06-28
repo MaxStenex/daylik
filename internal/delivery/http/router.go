@@ -48,6 +48,7 @@ func NewRouter(
 
 			r.Route("/habits-log", func(r chi.Router) {
 				r.Post("/", habitLogHandler.Create)
+				r.Get("/", habitLogHandler.List)
 				r.Put("/{id}", habitLogHandler.Update)
 			})
 		})

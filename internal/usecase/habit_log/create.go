@@ -2,9 +2,9 @@ package habit_log
 
 import (
 	"context"
-	"fmt"
 
 	domain "github.com/maximrozinkevich/daylik/internal/domain/habit_log"
+	"github.com/maximrozinkevich/daylik/pkg/logger"
 )
 
 func (s *service) Create(ctx context.Context, in CreateInput) (CreateOutput, error) {
@@ -39,7 +39,8 @@ func (s *service) Create(ctx context.Context, in CreateInput) (CreateOutput, err
 
 	created, err := s.habitLogRepo.Create(ctx, h)
 	if err != nil {
-		return CreateOutput{}, fmt.Errorf("error on new log item creation")
+		s.log.Error("habit_log: create", logger.Err(err))
+		return CreateOutput{}, ErrInternal
 	}
 
 	return CreateOutput{HabitLog: *created}, nil

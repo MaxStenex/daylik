@@ -9,4 +9,5 @@ var (
 	ErrInvalidUnit        = errors.New("unit is required")
 	ErrNotFound           = errors.New("habit not found")
 	ErrForbidden          = errors.New("access denied")
+	ErrInternal           = errors.New("internal error")
 )

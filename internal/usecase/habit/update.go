@@ -3,10 +3,10 @@ package habit
 import (
 	"context"
 	"errors"
-	"fmt"
 	"strings"
 
 	domain "github.com/maximrozinkevich/daylik/internal/domain/habit"
+	"github.com/maximrozinkevich/daylik/pkg/logger"
 )
 
 func (s *service) Update(ctx context.Context, in UpdateInput) error {
@@ -15,7 +15,8 @@ func (s *service) Update(ctx context.Context, in UpdateInput) error {
 		if errors.Is(err, domain.ErrNotFound) {
 			return ErrNotFound
 		}
-		return fmt.Errorf("habit: update: find: %w", err)
+		s.log.Error("habit: update: find", logger.Err(err))
+		return ErrInternal
 	}
 
 	if h.DeletedAt != nil {
@@ -50,7 +51,8 @@ func (s *service) Update(ctx context.Context, in UpdateInput) error {
 	h.Unit = unit
 
 	if err := s.habitRepo.Update(ctx, h); err != nil {
-		return fmt.Errorf("habit: update: %w", err)
+		s.log.Error("habit: update", logger.Err(err))
+		return ErrInternal
 	}
 
 	return nil

@@ -9,4 +9,5 @@ var (
 	ErrPasswordTooShort    = errors.New("password must be at least 8 characters")
 	ErrEmailTaken          = errors.New("email already registered")
 	ErrNotFound            = errors.New("user not found")
+	ErrInternal            = errors.New("internal error")
 )

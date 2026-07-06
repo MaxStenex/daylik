@@ -7,6 +7,7 @@ import (
 	"time"
 
 	refresh_token "github.com/maximrozinkevich/daylik/internal/domain/refresh_token"
+	"github.com/maximrozinkevich/daylik/pkg/logger"
 )
 
 func (srv *service) Refresh(ctx context.Context, in RefreshInput) (RefreshOutput, error) {
@@ -15,7 +16,8 @@ func (srv *service) Refresh(ctx context.Context, in RefreshInput) (RefreshOutput
 		if errors.Is(err, refresh_token.ErrNotFound) {
 			return RefreshOutput{}, ErrInvalidRefreshToken
 		}
-		return RefreshOutput{}, fmt.Errorf("refresh: find token: %w", err)
+		srv.log.Error("refresh: find token", logger.Err(err))
+		return RefreshOutput{}, ErrInternal
 	}
 
 	if time.Now().After(rt.ExpiresAt) {
@@ -25,7 +27,8 @@ func (srv *service) Refresh(ctx context.Context, in RefreshInput) (RefreshOutput
 
 	newRaw, err := srv.tokens.GenerateRefresh()
 	if err != nil {
-		return RefreshOutput{}, fmt.Errorf("refresh: generate refresh token: %w", err)
+		srv.log.Error("refresh: generate refresh token", logger.Err(err))
+		return RefreshOutput{}, ErrInternal
 	}
 
 	newRT := &refresh_token.RefreshToken{
@@ -43,12 +46,14 @@ func (srv *service) Refresh(ctx context.Context, in RefreshInput) (RefreshOutput
 		}
 		return nil
 	}); err != nil {
-		return RefreshOutput{}, fmt.Errorf("refresh: rotate token: %w", err)
+		srv.log.Error("refresh: rotate token", logger.Err(err))
+		return RefreshOutput{}, ErrInternal
 	}
 
 	accessToken, err := srv.tokens.IssueAccess(rt.UserID)
 	if err != nil {
-		return RefreshOutput{}, fmt.Errorf("refresh: issue access token: %w", err)
+		srv.log.Error("refresh: issue access token", logger.Err(err))
+		return RefreshOutput{}, ErrInternal
 	}
 
 	return RefreshOutput{

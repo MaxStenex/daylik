@@ -2,10 +2,10 @@ package habit
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	domain "github.com/maximrozinkevich/daylik/internal/domain/habit"
+	"github.com/maximrozinkevich/daylik/pkg/logger"
 )
 
 func (s *service) Create(ctx context.Context, in CreateInput) (CreateOutput, error) {
@@ -36,7 +36,8 @@ func (s *service) Create(ctx context.Context, in CreateInput) (CreateOutput, err
 	}
 
 	if err := s.habitRepo.Create(ctx, h); err != nil {
-		return CreateOutput{}, fmt.Errorf("habit: create: %w", err)
+		s.log.Error("habit: create", logger.Err(err))
+		return CreateOutput{}, ErrInternal
 	}
 
 	return CreateOutput{Habit: *h}, nil

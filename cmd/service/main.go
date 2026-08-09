@@ -59,9 +59,9 @@ func main() {
 	habitLogRepo := habit_log_repo.New(pool)
 
 	// Services
-	userSrv := user.New(userRepo, refreshTokenRepo, tokens, txm, cfg.JWT.RefreshTTL)
-	habitSrv := habit_usecase.New(habitRepo, habitLogRepo)
-	habitLogSrv := habit_log_usecase.New(habitLogRepo, habitRepo)
+	userSrv := user.New(userRepo, refreshTokenRepo, tokens, txm, cfg.JWT.RefreshTTL, log)
+	habitSrv := habit_usecase.New(habitRepo, habitLogRepo, log)
+	habitLogSrv := habit_log_usecase.New(habitLogRepo, habitRepo, log)
 
 	// Handlers
 	userHandler := user_handler.New(userSrv, cfg.JWT.RefreshTTL, cfg.HTTP.CookieSecure)

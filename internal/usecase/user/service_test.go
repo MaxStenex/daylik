@@ -1,6 +1,7 @@
 package user
 
 import (
+	"log/slog"
 	"testing"
 	"time"
 
@@ -25,5 +26,5 @@ func newTestService(t *testing.T) (*service, *serviceMocks) {
 		tokens:    mockusecase.NewMockTokenManager(t),
 		txm:       mockusecase.NewMockTxManager(t),
 	}
-	return New(m.userRepo, m.tokenRepo, m.tokens, m.txm, testRefreshTTL), m
+	return New(m.userRepo, m.tokenRepo, m.tokens, m.txm, testRefreshTTL, slog.New(slog.DiscardHandler)), m
 }

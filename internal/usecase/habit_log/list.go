@@ -2,7 +2,8 @@ package habit_log
 
 import (
 	"context"
-	"fmt"
+
+	"github.com/maximrozinkevich/daylik/pkg/logger"
 )
 
 func (s *service) List(ctx context.Context, in ListInput) (ListOutput, error) {
@@ -21,7 +22,8 @@ func (s *service) List(ctx context.Context, in ListInput) (ListOutput, error) {
 
 	logs, err := s.habitLogRepo.FindAllByHabitID(ctx, in.HabitID)
 	if err != nil {
-		return ListOutput{}, fmt.Errorf("habit_log: list: %w", err)
+		s.log.Error("habit_log: list", logger.Err(err))
+		return ListOutput{}, ErrInternal
 	}
 
 	return ListOutput{HabitLogs: logs}, nil

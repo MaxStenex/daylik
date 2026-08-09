@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
@@ -29,6 +30,7 @@ type service struct {
 	tokens     TokenManager
 	txm        TxManager
 	refreshTTL time.Duration
+	log        *slog.Logger
 }
 
 func New(
@@ -37,6 +39,7 @@ func New(
 	tokens TokenManager,
 	txm TxManager,
 	refreshTTL time.Duration,
+	log *slog.Logger,
 ) *service {
 	return &service{
 		userRepo:   userRepo,
@@ -44,6 +47,7 @@ func New(
 		tokens:     tokens,
 		txm:        txm,
 		refreshTTL: refreshTTL,
+		log:        log,
 	}
 }
 

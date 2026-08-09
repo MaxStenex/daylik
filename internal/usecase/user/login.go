@@ -3,12 +3,12 @@ package user
 import (
 	"context"
 	"errors"
-	"fmt"
 	"strings"
 	"time"
 
 	refresh_token "github.com/maximrozinkevich/daylik/internal/domain/refresh_token"
 	user "github.com/maximrozinkevich/daylik/internal/domain/user"
+	"github.com/maximrozinkevich/daylik/pkg/logger"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -20,7 +20,8 @@ func (srv *service) Login(ctx context.Context, in LoginInput) (LoginOutput, erro
 		if errors.Is(err, user.ErrNotFound) {
 			return LoginOutput{}, ErrInvalidCredentials
 		}
-		return LoginOutput{}, fmt.Errorf("login: find user: %w", err)
+		srv.log.Error("login: find user", logger.Err(err))
+		return LoginOutput{}, ErrInternal
 	}
 
 	if err = bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(in.Password)); err != nil {
@@ -29,12 +30,14 @@ func (srv *service) Login(ctx context.Context, in LoginInput) (LoginOutput, erro
 
 	accessToken, err := srv.tokens.IssueAccess(u.ID)
 	if err != nil {
-		return LoginOutput{}, fmt.Errorf("login: issue access token: %w", err)
+		srv.log.Error("login: issue access token", logger.Err(err))
+		return LoginOutput{}, ErrInternal
 	}
 
 	rawRefresh, err := srv.tokens.GenerateRefresh()
 	if err != nil {
-		return LoginOutput{}, fmt.Errorf("login: generate refresh token: %w", err)
+		srv.log.Error("login: generate refresh token", logger.Err(err))
+		return LoginOutput{}, ErrInternal
 	}
 
 	rt := &refresh_token.RefreshToken{
@@ -44,7 +47,8 @@ func (srv *service) Login(ctx context.Context, in LoginInput) (LoginOutput, erro
 	}
 
 	if err = srv.tokenRepo.Create(ctx, rt); err != nil {
-		return LoginOutput{}, fmt.Errorf("login: store refresh token: %w", err)
+		srv.log.Error("login: store refresh token", logger.Err(err))
+		return LoginOutput{}, ErrInternal
 	}
 
 	_ = srv.tokenRepo.PruneOldest(ctx, u.ID, maxSessionsPerUser)

@@ -74,7 +74,7 @@ func TestService_Refresh(t *testing.T) {
 			setup: func(m *serviceMocks) {
 				m.tokenRepo.EXPECT().FindByHash(mock.Anything, oldHash).Return(nil, errRepo)
 			},
-			wantErr: errRepo,
+			wantErr: ErrInternal,
 		},
 		{
 			name: "expired token is deleted",
@@ -94,7 +94,7 @@ func TestService_Refresh(t *testing.T) {
 				m.tokenRepo.EXPECT().FindByHash(mock.Anything, oldHash).Return(validToken(), nil)
 				m.tokens.EXPECT().GenerateRefresh().Return("", errGenerateRefresh)
 			},
-			wantErr: errGenerateRefresh,
+			wantErr: ErrInternal,
 		},
 		{
 			name: "rotation fails on delete",
@@ -105,7 +105,7 @@ func TestService_Refresh(t *testing.T) {
 				m.txm.EXPECT().RunInTx(mock.Anything, mock.Anything).RunAndReturn(runTx)
 				m.tokenRepo.EXPECT().DeleteByHash(mock.Anything, oldHash).Return(errRepo)
 			},
-			wantErr: errRepo,
+			wantErr: ErrInternal,
 		},
 		{
 			name: "rotation fails on create",
@@ -117,7 +117,7 @@ func TestService_Refresh(t *testing.T) {
 				m.tokenRepo.EXPECT().DeleteByHash(mock.Anything, oldHash).Return(nil)
 				m.tokenRepo.EXPECT().Create(mock.Anything, mock.Anything).Return(errRepo)
 			},
-			wantErr: errRepo,
+			wantErr: ErrInternal,
 		},
 		{
 			name: "issue access token error",
@@ -130,7 +130,7 @@ func TestService_Refresh(t *testing.T) {
 				m.tokenRepo.EXPECT().Create(mock.Anything, mock.Anything).Return(nil)
 				m.tokens.EXPECT().IssueAccess(userID).Return("", errIssueAccess)
 			},
-			wantErr: errIssueAccess,
+			wantErr: ErrInternal,
 		},
 	}
 

@@ -48,7 +48,7 @@ func TestService_Logout(t *testing.T) {
 					DeleteByHashAndUserID(mock.Anything, hashToken("raw-refresh"), userID).
 					Return(errRepo)
 			},
-			wantErr: errRepo,
+			wantErr: ErrInternal,
 		},
 	}
 

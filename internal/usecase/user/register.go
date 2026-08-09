@@ -3,11 +3,11 @@ package user
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/mail"
 	"strings"
 
 	user "github.com/maximrozinkevich/daylik/internal/domain/user"
+	"github.com/maximrozinkevich/daylik/pkg/logger"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -26,7 +26,8 @@ func (srv *service) Register(ctx context.Context, in RegisterInput) (RegisterOut
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(in.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return RegisterOutput{}, fmt.Errorf("register: hash password: %w", err)
+		srv.log.Error("register: hash password", logger.Err(err))
+		return RegisterOutput{}, ErrInternal
 	}
 
 	u := &user.User{
@@ -38,7 +39,8 @@ func (srv *service) Register(ctx context.Context, in RegisterInput) (RegisterOut
 		if errors.Is(err, user.ErrDuplicateEmail) {
 			return RegisterOutput{}, ErrEmailTaken
 		}
-		return RegisterOutput{}, fmt.Errorf("register: create user: %w", err)
+		srv.log.Error("register: create user", logger.Err(err))
+		return RegisterOutput{}, ErrInternal
 	}
 
 	return RegisterOutput{

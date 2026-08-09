@@ -2,15 +2,17 @@ package habit
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/uuid"
+
+	"github.com/maximrozinkevich/daylik/pkg/logger"
 )
 
 func (s *service) List(ctx context.Context, in ListInput) (ListOutput, error) {
 	habits, err := s.habitRepo.FindAllByUserID(ctx, in.UserID)
 	if err != nil {
-		return ListOutput{}, fmt.Errorf("habit: list: %w", err)
+		s.log.Error("habit: list", logger.Err(err))
+		return ListOutput{}, ErrInternal
 	}
 
 	habitIDs := make([]uuid.UUID, len(habits))
@@ -20,7 +22,8 @@ func (s *service) List(ctx context.Context, in ListInput) (ListOutput, error) {
 
 	logs, err := s.habitLogRepo.FindTodayByHabitIDs(ctx, in.UserID, habitIDs)
 	if err != nil {
-		return ListOutput{}, fmt.Errorf("habit: list: %w", err)
+		s.log.Error("habit: list", logger.Err(err))
+		return ListOutput{}, ErrInternal
 	}
 
 	for i := range habits {

@@ -71,7 +71,7 @@ func TestService_Register(t *testing.T) {
 					Create(mock.Anything, mock.Anything).
 					Return(errRepo)
 			},
-			wantErr: errRepo,
+			wantErr: ErrInternal,
 		},
 	}
 

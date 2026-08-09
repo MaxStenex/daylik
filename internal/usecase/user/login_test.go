@@ -71,7 +71,7 @@ func TestService_Login(t *testing.T) {
 			setup: func(m *serviceMocks) {
 				m.userRepo.EXPECT().FindByEmail(mock.Anything, "john@example.com").Return(nil, errRepo)
 			},
-			wantErr: errRepo,
+			wantErr: ErrInternal,
 		},
 		{
 			name: "issue access token error",
@@ -80,7 +80,7 @@ func TestService_Login(t *testing.T) {
 				m.userRepo.EXPECT().FindByEmail(mock.Anything, "john@example.com").Return(existing, nil)
 				m.tokens.EXPECT().IssueAccess(userID).Return("", errIssueAccess)
 			},
-			wantErr: errIssueAccess,
+			wantErr: ErrInternal,
 		},
 		{
 			name: "generate refresh token error",
@@ -90,7 +90,7 @@ func TestService_Login(t *testing.T) {
 				m.tokens.EXPECT().IssueAccess(userID).Return("access-token", nil)
 				m.tokens.EXPECT().GenerateRefresh().Return("", errGenerateRefresh)
 			},
-			wantErr: errGenerateRefresh,
+			wantErr: ErrInternal,
 		},
 		{
 			name: "store refresh token error",
@@ -101,7 +101,7 @@ func TestService_Login(t *testing.T) {
 				m.tokens.EXPECT().GenerateRefresh().Return("raw-refresh", nil)
 				m.tokenRepo.EXPECT().Create(mock.Anything, mock.Anything).Return(errRepo)
 			},
-			wantErr: errRepo,
+			wantErr: ErrInternal,
 		},
 		{
 			name: "prune error is ignored",

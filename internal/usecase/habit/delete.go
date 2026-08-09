@@ -3,9 +3,9 @@ package habit
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	domain "github.com/maximrozinkevich/daylik/internal/domain/habit"
+	"github.com/maximrozinkevich/daylik/pkg/logger"
 )
 
 func (s *service) Delete(ctx context.Context, in DeleteInput) error {
@@ -14,7 +14,8 @@ func (s *service) Delete(ctx context.Context, in DeleteInput) error {
 		if errors.Is(err, domain.ErrNotFound) {
 			return ErrNotFound
 		}
-		return fmt.Errorf("habit: delete: find: %w", err)
+		s.log.Error("habit: delete: find", logger.Err(err))
+		return ErrInternal
 	}
 
 	if h.DeletedAt != nil {
@@ -26,7 +27,8 @@ func (s *service) Delete(ctx context.Context, in DeleteInput) error {
 	}
 
 	if err := s.habitRepo.DeleteByID(ctx, in.HabitID); err != nil {
-		return fmt.Errorf("habit: delete: %w", err)
+		s.log.Error("habit: delete", logger.Err(err))
+		return ErrInternal
 	}
 
 	return nil

@@ -9,4 +9,5 @@ var (
 	ErrNotFound               = errors.New("Habit log not found")
 	ErrForbidden              = errors.New("Access denied")
 	ErrUpdateOutdated         = errors.New("You can only update today's log")
+	ErrInternal               = errors.New("Something went wrong")
 )

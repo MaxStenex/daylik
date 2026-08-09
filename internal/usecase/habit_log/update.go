@@ -3,10 +3,10 @@ package habit_log
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	domain "github.com/maximrozinkevich/daylik/internal/domain/habit_log"
 	"github.com/maximrozinkevich/daylik/internal/helpers"
+	"github.com/maximrozinkevich/daylik/pkg/logger"
 )
 
 func (s *service) Update(ctx context.Context, in UpdateInput) error {
@@ -15,7 +15,8 @@ func (s *service) Update(ctx context.Context, in UpdateInput) error {
 		if errors.Is(err, domain.ErrNotFound) {
 			return ErrNotFound
 		}
-		return fmt.Errorf("habit_log: update: find: %w", err)
+		s.log.Error("habit_log: update: find", logger.Err(err))
+		return ErrInternal
 	}
 
 	if log.UserID != in.UserID {
@@ -28,7 +29,8 @@ func (s *service) Update(ctx context.Context, in UpdateInput) error {
 
 	habit, err := s.habitRepo.FindByID(ctx, log.HabitID)
 	if err != nil {
-		return fmt.Errorf("habit_log: update: find habit: %w", err)
+		s.log.Error("habit_log: update: find habit", logger.Err(err))
+		return ErrInternal
 	}
 
 	if in.CompletedCount <= 0 {
@@ -47,7 +49,8 @@ func (s *service) Update(ctx context.Context, in UpdateInput) error {
 	}
 
 	if err := s.habitLogRepo.Update(ctx, log); err != nil {
-		return fmt.Errorf("habit_log: update: %w", err)
+		s.log.Error("habit_log: update", logger.Err(err))
+		return ErrInternal
 	}
 
 	return nil

@@ -34,7 +34,7 @@ func (r *repository) Create(ctx context.Context, h *domain.HabitLog) (*domain.Ha
 
 func (r *repository) FindByID(ctx context.Context, id uuid.UUID) (*domain.HabitLog, error) {
 	rows, err := r.pool.Query(ctx,
-		`SELECT id, user_id, habit_id, completed_count, created_at
+		`SELECT id, user_id, habit_id, completed_count, unit, daily_target, created_at
 		 FROM habits_log WHERE id = $1`,
 		id,
 	)

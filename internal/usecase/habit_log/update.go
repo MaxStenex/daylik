@@ -2,15 +2,20 @@ package habit_log
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	domain "github.com/maximrozinkevich/daylik/internal/domain/habit_log"
 	"github.com/maximrozinkevich/daylik/internal/helpers"
 )
 
 func (s *service) Update(ctx context.Context, in UpdateInput) error {
 	log, err := s.habitLogRepo.FindByID(ctx, in.ID)
 	if err != nil {
-		return ErrNotFound
+		if errors.Is(err, domain.ErrNotFound) {
+			return ErrNotFound
+		}
+		return fmt.Errorf("habit_log: update: find: %w", err)
 	}
 
 	if log.UserID != in.UserID {

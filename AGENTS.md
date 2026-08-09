@@ -19,6 +19,10 @@ Use only the technologies listed below when generating code for this project.
 ## Configuration
 - cleanenv (env vars, `.env` file via godotenv)
 
+## Testing
+- testify (`github.com/stretchr/testify`) — `assert` / `require` / `mock`
+- mockery v3 (`github.com/vektra/mockery/v3`) — mock generation
+
 ## Infrastructure
 - Docker, Docker Compose
 - GitHub Actions
@@ -50,6 +54,7 @@ delivery/http → usecase → domain ← repository
 - `internal/adapters/` — external integrations (JWT, etc.)
 - `pkg/` — shared infrastructure (config, logger, postgres pool)
 - `internal/generated/api/` — types generated from `api/openapi.yaml` via `oapi-codegen` (`make gen`)
+- `internal/generated/mocks/` — mocks generated from every interface under `internal/` via `mockery` (`make mocks`)
 
 # Patterns & Conventions
 

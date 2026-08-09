@@ -1,0 +1,11 @@
+all: true
+dir: 'internal/generated/mocks/{{.InterfaceDirRelative | trimPrefix "internal/"}}'
+filename: "{{.InterfaceName | camelcase | firstLower}}.go"
+structname: "Mock{{.InterfaceName | camelcase | firstUpper}}"
+template: testify
+packages:
+  github.com/maximrozinkevich/daylik/internal:
+    config:
+      recursive: true
+      exclude-subpkg-regex:
+        - internal/generated

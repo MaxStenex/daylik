@@ -27,6 +27,13 @@ Use only the technologies listed below when generating code for this project.
 - Docker, Docker Compose
 - GitHub Actions
 
+## Observability
+- OpenTelemetry Collector — single ingest point, fans out to the backends
+- Jaeger (traces), Prometheus (metrics), Loki (logs), Grafana (UI)
+- OpenTelemetry Go SDK (`go.opentelemetry.io/otel`) — app pushes OTLP to the collector
+- otelhttp (`go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp`) — HTTP server instrumentation
+- otelpgx (`github.com/exaring/otelpgx`) — pgx tracing
+
 # Commit Messages
 
 - Title under 50 chars, starting with `feat: `, `fix: `, or `refactor: `
@@ -55,6 +62,7 @@ delivery/http → usecase → domain ← repository
 - `pkg/` — shared infrastructure (config, logger, postgres pool)
 - `internal/generated/api/` — types generated from `api/openapi.yaml` via `oapi-codegen` (`make gen`)
 - `internal/generated/mocks/` — mocks generated from every interface under `internal/` via `mockery` (`make mocks`)
+- `deploy/observability/` — collector, Prometheus, Loki and Grafana configs for the local stack (`make obs-*`)
 
 # Patterns & Conventions
 

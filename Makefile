@@ -1,6 +1,9 @@
-.PHONY: deps run down migrate lint fmt test gen mocks
+.PHONY: deps run down migrate lint fmt test gen mocks obs-up obs-down obs-logs obs-check
 
 REDOCLY_VERSION := 1.34.5
+
+OBS_FILES := -f docker-compose.yml -f docker-compose.observability.yml
+OBS_SERVICES := otel-collector jaeger loki loki-init prometheus grafana
 
 gen: mocks
 	npx --yes @redocly/cli@$(REDOCLY_VERSION) bundle api/openapi.yaml -o .build/openapi.bundled.yaml
@@ -30,3 +33,15 @@ test:
 
 down:
 	docker-compose down
+
+obs-up:
+	docker compose $(OBS_FILES) up -d $(OBS_SERVICES)
+
+obs-down:
+	docker compose $(OBS_FILES) rm -sf $(OBS_SERVICES)
+
+obs-logs:
+	docker compose $(OBS_FILES) logs -f otel-collector
+
+obs-check:
+	./deploy/observability/check.sh

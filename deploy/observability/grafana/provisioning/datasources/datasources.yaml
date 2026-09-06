@@ -1,0 +1,57 @@
+apiVersion: 1
+
+deleteDatasources:
+  - name: Prometheus
+  - name: Loki
+  - name: Jaeger
+
+datasources:
+  - name: Prometheus
+    uid: daylik-prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    jsonData:
+      httpMethod: POST
+      timeInterval: 15s
+      exemplarTraceIdDestinations:
+        - name: trace_id
+          datasourceUid: daylik-jaeger
+
+  - name: Loki
+    uid: daylik-loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    jsonData:
+      maxLines: 1000
+      derivedFields:
+        - name: TraceID
+          matcherType: label
+          matcherRegex: trace_id
+          url: "$${__value.raw}"
+          datasourceUid: daylik-jaeger
+          urlDisplayLabel: View trace
+
+  - name: Jaeger
+    uid: daylik-jaeger
+    type: jaeger
+    access: proxy
+    url: http://jaeger:16686
+    jsonData:
+      tracesToLogsV2:
+        datasourceUid: daylik-loki
+        spanStartTimeShift: "-5m"
+        spanEndTimeShift: "5m"
+        filterByTraceID: true
+        filterBySpanID: false
+        tags:
+          - key: service.name
+            value: service_name
+      tracesToMetrics:
+        datasourceUid: daylik-prometheus
+        spanStartTimeShift: "-5m"
+        spanEndTimeShift: "5m"
+      nodeGraph:
+        enabled: true
